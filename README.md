@@ -16,4 +16,9 @@
       7. $ sequelize model:create --name User --attributes user_name:string,email:string,password:text
       8. $ sequelize db:migrate
       ERROR: Please install pg package manually
-      9. npm install express --save
+      9. $ npm install express --save
+      10. $ npm install --save pg pg-hstore
+      11. $ npm install body-parser --save
+      12. $ npm install morgan
+      13. $ npm install jsonwebtoken
+      13. $ npm install bcrypt
