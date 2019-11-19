@@ -1,26 +1,29 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "database_development",
+    "username": "auth_jwt_sequelize_user",
+    "password": "111111",
+    "database": "auth_jwt_sequelize",
     "host": "127.0.0.1",
-    "dialect": "mysql",
+    "port": 5432,
+    "dialect": "postgres",
     "operatorsAliases": false
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
+    "username": "auth_jwt_sequelize_user",
+    "password": "111111",
+    "database": "auth_jwt_sequelize",
     "host": "127.0.0.1",
-    "dialect": "mysql",
+    "port": 5432,
+    "dialect": "postgres",
     "operatorsAliases": false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+    "username": "auth_jwt_sequelize_user",
+    "password": "111111",
+    "database": "auth_jwt_sequelize",
     "host": "127.0.0.1",
-    "dialect": "mysql",
+    "port": 5432,
+    "dialect": "postgres",
     "operatorsAliases": false
   }
 }
