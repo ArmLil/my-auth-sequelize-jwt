@@ -19,7 +19,7 @@ module.exports = (app) => {
   // router.get("/current_user", auth.check, auth.current_user);
 
   router.get("/users", users.getUsers);
-  // router.get("/users/:id", users.getUserById);
+  router.get("/users/:id", users.getUserById);
   router.post("/users", users.registerUser);
   // router.put("/users/:id", users.updateUser);
   // router.delete("/users/:id", users.deleteUser);

@@ -17,13 +17,21 @@ function getUsers(req, res) {
           message: error.message
       });
   });
-  // res.json({"massage": 'function getUsers'})
 }
 
-// function getUserById(req, res) {
-//   console.log('function getUserById');
-//   res.send({"massage": 'function getUserById'})
-// }
+function getUserById(req, res) {
+  console.log('function getUserById');
+  db.User.findByPk(req.params.id).then(function (user) {
+      res.json({
+          data: user
+      });
+  }).catch(function (error) {
+      console.error(error);
+      res.json({
+          message: error.message
+      });
+  });
+}
 
 function registerUser(req, res) {
   console.log('function registerUser');
@@ -62,8 +70,8 @@ function registerUser(req, res) {
 
 module.exports = {
   getUsers: getUsers,
-  // getUserById: getUserById,
+  getUserById: getUserById,
   registerUser: registerUser
-  // updateUsers: updateUsers,
-  // deleteUsers: deleteUsers
+  // updateUser: updateUser,
+  // deleteUser: deleteUser
 }

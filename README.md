@@ -2,9 +2,9 @@
 
  #### Useful links
 
-      https://gist.github.com/vapurrmaid/a111bf3fc0224751cb2f76532aac2465
+  https://gist.github.com/vapurrmaid/a111bf3fc0224751cb2f76532aac2465
 
-      https://scotch.io/tutorials/getting-started-with-node-express-and-postgres-using-sequelize
+  https://scotch.io/tutorials/getting-started-with-node-express-and-postgres-using-sequelize
 
 
       1. $ mkdir my-auth-sequelize
