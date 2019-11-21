@@ -9,7 +9,9 @@ let api = require("./routes/api")()
 var db = require('./models');
 
 // Log requests to the console.
-app.use(logger('dev'));
+logger.token('body', function (req, res) { return JSON.stringify(req.body) });
+app.use(logger(':method :url :status :response-time ms - :res[content-length] :body - :req[content-length]'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -24,5 +26,5 @@ app.use(function (req, res, next) {
 
 
 app.listen(3000, function() {
-  // db.sequelize.sync();
+  db.sequelize.sync();
 });

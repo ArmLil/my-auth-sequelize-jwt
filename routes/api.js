@@ -7,7 +7,6 @@ module.exports = (app) => {
   const users = require('../controllers/user_controller');
   // const auth = require("../controllers/auth_controller");
 
-
   router.get("/", function (req, res) {
       res.json({
           message: "RESTapi service"
@@ -21,8 +20,8 @@ module.exports = (app) => {
   router.get("/users", users.getUsers);
   router.get("/users/:id", users.getUserById);
   router.post("/users", users.registerUser);
-  // router.put("/users/:id", users.updateUser);
-  // router.delete("/users/:id", users.deleteUser);
+  router.put("/users/:id", users.updateUser);
+  router.delete("/users/:id", users.deleteUser);
 
   return router;
 };

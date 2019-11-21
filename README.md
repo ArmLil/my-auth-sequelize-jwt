@@ -13,7 +13,7 @@
       4. $ npm install sequelize-cli -g
       5. $ npm install sequelize --save
       6. $ sequelize init
-      7. $ sequelize model:create --name User --attributes user_name:string,email:string,password:text
+      7. $ sequelize model:create --name User --attributes username:string,email:string,password:text
       8. $ sequelize db:migrate
       ERROR: Please install pg package manually
       9. $ npm install express --save
