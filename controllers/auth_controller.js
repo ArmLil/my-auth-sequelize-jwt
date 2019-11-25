@@ -39,6 +39,12 @@ function checkauth(req, res, next) {
     });
 }
 
+// to disable the auth for all the endpoints comment the
+// previous function checkauth and discomment this fake checkauth
+// function checkauth(req, res, next) {
+//   next()
+// }
+
 function checkToken(req, res) {
     let token = req.body.token || req.query.token || req.headers['x-auth'] || req.headers['x-access-token'] || req.headers['authorization'];
     if (!token) {

@@ -18,10 +18,10 @@ module.exports = (app) => {
   // router.get("/current_user", auth.check, auth.current_user);
 
   router.get("/users", auth.checkauth, users.getUsers);
-  router.get("/users/:id", users.getUserById);
-  router.post("/users", users.registerUser);
-  router.put("/users/:id", users.updateUser);
-  router.delete("/users/:id", users.deleteUser);
+  router.get("/users/:id", auth.checkauth, users.getUserById);
+  router.post("/users", auth.checkauth, users.registerUser);
+  router.put("/users/:id", auth.checkauth, users.updateUser);
+  router.delete("/users/:id", auth.checkauth, users.deleteUser);
 
 
   router.post("/login", auth.login);
