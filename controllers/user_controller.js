@@ -7,8 +7,8 @@ const saltRounds = 10;
 
 
 async function getUsers(req, res) {
+  console.log('function getUsers');
   try {
-    console.log('function getUsers');
     const users = await db.User.findAndCountAll();
     res.json({
       data: users.rows,
@@ -17,7 +17,7 @@ async function getUsers(req, res) {
   } catch(error) {
     console.error(error)
     res.json({
-      error: error.message
+      errorMessage: error.message
     })
   }
 
@@ -25,7 +25,6 @@ async function getUsers(req, res) {
 
 async function getUserById(req, res) {
   console.log('function getUserById');
-
   try {
     const user = db.User.findByPk(req.params.id);
     rews.json({
@@ -34,14 +33,13 @@ async function getUserById(req, res) {
   } catch(error) {
     console.error(error)
     res.json({
-      error: error.message
+      errorMessage: error.message
     })
   }
 }
 
 async function registerUser(req, res) {
   console.log('function registerUser');
-
   try {
     //check username
     //do not let user to update his username with a username which already exists
@@ -72,13 +70,12 @@ async function registerUser(req, res) {
   } catch(error) {
     console.error(error);
     res.json({
-      error: error.message
+      errorMessage: error.message
     })
   }
 }
 
 async function updateUser(req, res) {
-
   try {
     const user = await db.User.findByPk(req.params.id);
     if(!user) throw new Error('validationError: User by this id is not found!')
@@ -112,9 +109,8 @@ async function updateUser(req, res) {
 
   } catch (err) {
     console.error(err);
-    res.json({error: err.message})
+    res.json({errorMessage: err.message})
   }
-
 }
 
 
@@ -127,7 +123,7 @@ async function deleteUser(req, res) {
     res.json({"massage": `user ${user.username}, ${user.email}, ${user.id} is deleted`})
   } catch(error) {
     console.error(error)
-    res.json({error: error.message})
+    res.json({errorMessage: error.message})
   }
 }
 

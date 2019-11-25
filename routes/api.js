@@ -5,7 +5,7 @@ module.exports = (app) => {
   const express = require("express");
   const router = require('express').Router();
   const users = require('../controllers/user_controller');
-  // const auth = require("../controllers/auth_controller");
+  const auth = require("../controllers/auth_controller");
 
   router.get("/", function (req, res) {
       res.json({
@@ -17,11 +17,15 @@ module.exports = (app) => {
   // router.post("/check_token", auth.check_token);
   // router.get("/current_user", auth.check, auth.current_user);
 
-  router.get("/users", users.getUsers);
+  router.get("/users", auth.checkauth, users.getUsers);
   router.get("/users/:id", users.getUserById);
   router.post("/users", users.registerUser);
   router.put("/users/:id", users.updateUser);
   router.delete("/users/:id", users.deleteUser);
+
+
+  router.post("/login", auth.login);
+  router.post("/checkToken", auth.checkToken);
 
   return router;
 };
