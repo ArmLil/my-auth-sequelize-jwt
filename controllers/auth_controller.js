@@ -71,6 +71,7 @@ function checkToken(req, res) {
                 errorMessage: err
             });
         } else {
+          console.log({decoded});
             return res.json({
                 message: 'Token valid',
                 decoded

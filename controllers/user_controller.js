@@ -9,9 +9,14 @@ const saltRounds = 10;
 async function getUsers(req, res) {
   console.log('function getUsers');
   try {
-    const users = await db.User.findAndCountAll();
+    const users = await db.User.findAndCountAll({
+      include: [{
+          model: db.Article,
+          as: "articles"
+        }]
+    });
     res.json({
-      data: users.rows,
+      users: users.rows,
       count: users.count
     });
   } catch(error) {
@@ -26,10 +31,14 @@ async function getUsers(req, res) {
 async function getUserById(req, res) {
   console.log('function getUserById');
   try {
-    const user = db.User.findByPk(req.params.id);
-    rews.json({
-      data: user
-    })
+    const user = await db.User.findByPk(req.params.id,
+    {
+      include: [{
+          model: db.Article,
+          as: "articles"
+        }]
+    });
+    res.json({user})
   } catch(error) {
     console.error(error)
     res.json({
@@ -42,7 +51,7 @@ async function registerUser(req, res) {
   console.log('function registerUser');
   try {
     //check username
-    //do not let user to update his username with a username which already exists
+    //do not let user to create his username with a username which already exists
     const findUserByUsername = await db.User.findOne({where:{username: req.body.username}})
     if (findUserByUsername) {
       console.log('findUserByUsername=', findUserByUsername.toJSON());
@@ -65,7 +74,7 @@ async function registerUser(req, res) {
       }
     })
 
-    res.json({data: user});
+    res.json({user});
 
   } catch(error) {
     console.error(error);
@@ -80,8 +89,6 @@ async function updateUser(req, res) {
     const user = await db.User.findByPk(req.params.id);
     if(!user) throw new Error('validationError: User by this id is not found!')
 
-    console.log('user=', user.toJSON(), 'req.body=', req.body);
-
     //check username
     //do not let user to update his username with a username which already exists
     const findUserByUsername = await db.User.findOne({where:{username: req.body.username}})
@@ -94,7 +101,6 @@ async function updateUser(req, res) {
     //do not let user to update his email with an email which already exists
     const findUserByEmail = await db.User.findOne({where:{email: req.body.email}})
     if (user.email !== req.body.email && findUserByEmail) {
-      console.log('findUserByEmail=', findUserByEmail.toJSON());
         throw new Error('validationError: User with this email already exists!')
     }
 
@@ -105,7 +111,7 @@ async function updateUser(req, res) {
     }
 
     await user.save({username: req.body.username, email: req.body.email})
-    res.json({data: user})
+    res.json({user})
 
   } catch (err) {
     console.error(err);
