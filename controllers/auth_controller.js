@@ -6,11 +6,9 @@ const bcrypt = require('bcrypt');
 
 function checkauth(req, res, next) {
     let token = req.body.token || req.query.token || req.headers['x-auth'] || req.headers['x-access-token'] || req.headers['authorization'];
-
     if (!token) {
         return res.status(403).json({success: false, errorMessage: 'Токен отсутствует!'});
     }
-
     // Get auth header value if it is bearer
     const bearerHeader = req.headers['authorization'];
 
@@ -25,7 +23,6 @@ function checkauth(req, res, next) {
       req.token = bearerToken;
       token = bearerToken;
     }
-
     // jwt.verify(token, process.env.SECRET, function (err, decoded) {
     jwt.verify(token, 'anySecretKey', function (err, decoded) {
         if (err) {
@@ -33,6 +30,26 @@ function checkauth(req, res, next) {
                 message: 'Сессия с таким токеном отсутствует!'
             });
         } else {
+          console.log({decoded});
+          db.User.findOne({
+            where:{
+              username: decoded.data.username,
+              email: decoded.data.email
+              // password: decoded.data.password
+            }
+          }).then(user => {
+            if(!user) {
+              return res.status(403).json({errorMessage: 'Token is not valid'})
+            } else {
+              return next();
+            }
+          }).catch(error => {
+            console.error('Opps', error)
+            res.json({
+              errorMessage: error
+            })
+          })
+
             req.user = decoded;
             return next();
         }
