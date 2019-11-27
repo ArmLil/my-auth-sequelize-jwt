@@ -72,10 +72,28 @@ function checkToken(req, res) {
             });
         } else {
           console.log({decoded});
-            return res.json({
-                message: 'Token valid',
-                decoded
-            });
+          db.User.findOne({
+            where:{
+              username: decoded.data.username,
+              email: decoded.data.email
+              // password: decoded.data.password
+            }
+          }).then(user => {
+            if(!user) {
+              return res.status(403).json({errorMessage: 'Token is not valid'})
+            } else {
+              return res.json({
+                  message: 'Token valid',
+                  decoded
+              });
+            }
+          }).catch(error => {
+            console.error('Opps', error)
+            res.json({
+              errorMessage: error
+            })
+          })
+
         }
     });
 }
