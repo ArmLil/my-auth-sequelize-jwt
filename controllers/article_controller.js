@@ -1,68 +1,73 @@
-"use strict"
+"use strict";
 
-let db = require('../models');
-
+let db = require("../models");
 
 async function getArticles(req, res) {
-  console.log('function getArticle', 'req.token= ', req.token, 'req.user= ', req.user);
   try {
     let articles = await db.Article.findAndCountAll({
-      include: [{
+      include: [
+        {
           model: db.User,
           as: "user"
-        }]
+        }
+      ]
     });
 
     articles = articles.rows.map(article => {
-      delete article.dataValues.user.dataValues.password
-      return article
-    })
+      delete article.dataValues.user.dataValues.password;
+      return article;
+    });
 
     res.json({
       articles,
       count: articles.count
     });
-  } catch(error) {
-    console.error(error)
+  } catch (error) {
+    console.error(error);
     res.json({
       errorMessage: error.message
-    })
+    });
   }
-
 }
 
 async function getArticleById(req, res) {
-  console.log('function getArticleById');
+  console.log("function getArticleById");
   try {
     let article = await db.Article.findByPk(req.params.id, {
-      include: [{
+      include: [
+        {
           model: db.User,
           as: "user"
-        }]
+        }
+      ]
     });
     if (!article) {
-        throw new Error('validationError: Article with this id is not found!')
+      throw new Error("validationError: Article with this id is not found!");
     }
 
-    delete article.dataValues.user.dataValues.password
+    delete article.dataValues.user.dataValues.password;
 
-    res.json({article})
-  } catch(error) {
-    console.error(error)
+    res.json({ article });
+  } catch (error) {
+    console.error(error);
     res.json({
       errorMessage: error.message
-    })
+    });
   }
 }
 
 async function createArticle(req, res) {
-  console.log('function createArticle');
+  console.log("function createArticle");
   try {
     //check title
     //do not let article to update his title with a title which already exists
-    const findArticleByTitle = await db.Article.findOne({where:{title: req.body.title}})
+    const findArticleByTitle = await db.Article.findOne({
+      where: { title: req.body.title }
+    });
     if (findArticleByTitle) {
-        throw new Error('validationError: Article with this title already exists!')
+      throw new Error(
+        "validationError: Article with this title already exists!"
+      );
     }
 
     const article = await db.Article.findOrCreate({
@@ -70,31 +75,36 @@ async function createArticle(req, res) {
         title: req.body.title,
         content: req.body.content,
         author: req.body.author,
-        user_id: req.body.user_id}
-    })
+        user_id: req.body.user_id
+      }
+    });
 
-    res.json({article});
-
-  } catch(error) {
+    res.json({ article });
+  } catch (error) {
     console.error(error);
     res.json({
       errorMessage: error.message
-    })
+    });
   }
 }
 
 async function updateArticle(req, res) {
   try {
     const article = await db.Article.findByPk(req.params.id);
-    if(!article) throw new Error('validationError: Article by this id is not found!')
+    if (!article)
+      throw new Error("validationError: Article by this id is not found!");
 
-    console.log('article=', article.toJSON(), 'req.body=', req.body);
+    console.log("article=", article.toJSON(), "req.body=", req.body);
 
     //check title
     //do not let article to update his title with an title which already exists
-    const findArticleByTitle = await db.Article.findOne({where:{title: req.body.title}})
+    const findArticleByTitle = await db.Article.findOne({
+      where: { title: req.body.title }
+    });
     if (article.title !== req.body.title && findArticleByTitle) {
-      throw new Error('validationError: Article with this title already exists!')
+      throw new Error(
+        "validationError: Article with this title already exists!"
+      );
     }
 
     if (req.body.title) article.title = req.body.title;
@@ -102,29 +112,26 @@ async function updateArticle(req, res) {
     if (req.body.author) article.author = req.body.author;
     if (req.body.user_id) article.user_id = req.body.user_id;
 
-
-    await article.save()
-    res.json({article})
-
+    await article.save();
+    res.json({ article });
   } catch (err) {
     console.error(err);
-    res.json({errorMessage: err.message})
+    res.json({ errorMessage: err.message });
   }
 }
 
-
 async function deleteArticle(req, res) {
-  console.log('function deleteArticles');
+  console.log("function deleteArticles");
   try {
     const article = await db.Article.findByPk(req.params.id);
-    if(!article) {
-      throw new Error('validationError: Article by this id is not found!')
+    if (!article) {
+      throw new Error("validationError: Article by this id is not found!");
     }
     await article.destroy();
-    res.json({"massage": `article ${article.title}, ${article.id} is deleted`})
-  } catch(error) {
-    console.error(error)
-    res.json({errorMessage: error.message})
+    res.json({ massage: `article ${article.title}, ${article.id} is deleted` });
+  } catch (error) {
+    console.error(error);
+    res.json({ errorMessage: error.message });
   }
 }
 
@@ -134,4 +141,4 @@ module.exports = {
   createArticle: createArticle,
   updateArticle: updateArticle,
   deleteArticle: deleteArticle
-}
+};

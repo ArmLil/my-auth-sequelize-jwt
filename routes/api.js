@@ -1,17 +1,16 @@
-"use strict"
+"use strict";
 
-module.exports = (app) => {
-
+module.exports = app => {
   const express = require("express");
-  const router = require('express').Router();
-  const articles = require('../controllers/article_controller');
-  const users = require('../controllers/user_controller');
+  const router = require("express").Router();
+  const articles = require("../controllers/article_controller");
+  const users = require("../controllers/user_controller");
   const auth = require("../controllers/auth_controller");
 
-  router.get("/", function (req, res) {
-      res.json({
-          message: "RESTapi service"
-      });
+  router.get("/", function(req, res) {
+    res.json({
+      message: "RESTapi service"
+    });
   });
 
   router.get("/articles", auth.checkauth, articles.getArticles);
@@ -20,13 +19,11 @@ module.exports = (app) => {
   router.put("/articles/:id", auth.checkauth, articles.updateArticle);
   router.delete("/articles/:id", auth.checkauth, articles.deleteArticle);
 
-
   router.get("/users", auth.checkauth, users.getUsers);
   router.get("/users/:id", auth.checkauth, users.getUserById);
   router.post("/users", users.registerUser);
   router.put("/users/:id", auth.checkauth, users.updateUser);
   router.delete("/users/:id", auth.checkauth, users.deleteUser);
-
 
   router.post("/login", auth.login);
 

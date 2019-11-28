@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Articles', {
+    return queryInterface.createTable("Articles", {
       id: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -20,17 +20,16 @@ module.exports = {
       user_id: {
         type: Sequelize.UUID,
         references: {
-          model: 'Users', // name of Target model
-          key: 'id', // key in Target model that we're referencing
+          model: "Users", // name of Target model
+          key: "id" // key in Target model that we're referencing
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL"
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: new Date()
-
       },
       updated_at: {
         allowNull: false,
@@ -40,6 +39,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Articles');
+    return queryInterface.dropTable("Articles");
   }
 };
