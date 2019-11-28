@@ -7,13 +7,8 @@ function checkauth(req, res, next) {
     req.body.token ||
     req.query.token ||
     req.headers["x-auth"] ||
-    req.headers["x-access-token"] ||
-    req.headers["authorization"];
-  if (!token) {
-    return res
-      .status(403)
-      .json({ success: false, errorMessage: "Token is not provided!" });
-  }
+    req.headers["x-access-token"];
+
   // Get auth header value if it is bearer
   const bearerHeader = req.headers["authorization"];
 
@@ -24,8 +19,12 @@ function checkauth(req, res, next) {
     req.token = bearerToken;
     token = bearerToken;
   }
-  // jwt.verify(token, process.env.SECRET, function (err, decoded) {
-  jwt.verify(token, "anySecretKey", function(err, decoded) {
+  if (!token) {
+    return res
+      .status(403)
+      .json({ success: false, errorMessage: "Token is not provided!" });
+  }
+  jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
     if (err) {
       console.error(err);
       return res.status(403).json({
@@ -90,10 +89,9 @@ async function login(req, res, next) {
         // expiresIn: 60 * 60 * 24 = 1 day
         let token = jwt.sign(
           { data: { username: user.username, email: user.email } },
-          "anySecretKey",
+          process.env.TOKEN_SECRET,
           { expiresIn: 60 * 60 * 24 }
         );
-        // let token = jwt.sign({data: user}, process.env.SECRET, {expiresIn: 60 * 60 * 24 * 30});
         res.status(200).json({
           data: { token }
         });

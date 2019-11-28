@@ -2,6 +2,7 @@
 
 var express = require("express");
 var app = express();
+require("dotenv").config();
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 //Import routes
