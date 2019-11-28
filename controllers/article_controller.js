@@ -4,16 +4,22 @@ let db = require('../models');
 
 
 async function getArticles(req, res) {
-  console.log('function getArticle');
+  console.log('function getArticle', 'req.token= ', req.token, 'req.user= ', req.user);
   try {
-    const articles = await db.Article.findAndCountAll({
+    let articles = await db.Article.findAndCountAll({
       include: [{
           model: db.User,
           as: "user"
         }]
     });
+
+    articles = articles.rows.map(article => {
+      delete article.dataValues.user.dataValues.password
+      return article
+    })
+
     res.json({
-      articles: articles.rows,
+      articles,
       count: articles.count
     });
   } catch(error) {
@@ -28,7 +34,7 @@ async function getArticles(req, res) {
 async function getArticleById(req, res) {
   console.log('function getArticleById');
   try {
-    const article = await db.Article.findByPk(req.params.id, {
+    let article = await db.Article.findByPk(req.params.id, {
       include: [{
           model: db.User,
           as: "user"
@@ -37,6 +43,9 @@ async function getArticleById(req, res) {
     if (!article) {
         throw new Error('validationError: Article with this id is not found!')
     }
+
+    delete article.dataValues.user.dataValues.password
+
     res.json({article})
   } catch(error) {
     console.error(error)

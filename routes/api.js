@@ -29,7 +29,6 @@ module.exports = (app) => {
 
 
   router.post("/login", auth.login);
-  router.post("/checkToken", auth.checkToken);
 
   return router;
 };

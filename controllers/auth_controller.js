@@ -3,21 +3,16 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 
-
 function checkauth(req, res, next) {
     let token = req.body.token || req.query.token || req.headers['x-auth'] || req.headers['x-access-token'] || req.headers['authorization'];
     if (!token) {
-        return res.status(403).json({success: false, errorMessage: 'Токен отсутствует!'});
+        return res.status(403).json({success: false, errorMessage: 'Token is not provided!'});
     }
     // Get auth header value if it is bearer
     const bearerHeader = req.headers['authorization'];
 
-    console.log(req.headers);
-    // Check if bearer is undefined
-    if(typeof bearerHeader !== 'undefined') {
-      // Split at the space
+    if(bearerHeader) {
       const bearer = bearerHeader.split(' ');
-      // Get token from array
       const bearerToken = bearer[1];
       // Set the token
       req.token = bearerToken;
@@ -26,21 +21,21 @@ function checkauth(req, res, next) {
     // jwt.verify(token, process.env.SECRET, function (err, decoded) {
     jwt.verify(token, 'anySecretKey', function (err, decoded) {
         if (err) {
-            return res.status(403).json({
-                message: 'Сессия с таким токеном отсутствует!'
-            });
+          console.error(err)
+          return res.status(403).json({
+              errorMessage: err.message
+          });
         } else {
-          console.log({decoded});
           db.User.findOne({
             where:{
-              username: decoded.data.username,
               email: decoded.data.email
-              // password: decoded.data.password
             }
           }).then(user => {
             if(!user) {
-              return res.status(403).json({errorMessage: 'Token is not valid'})
+              return res.status(403).json({errorMessage: 'User with this token does not exist!'})
             } else {
+              req.user = decoded;
+              console.log('Token is valid!', decoded);
               return next();
             }
           }).catch(error => {
@@ -49,9 +44,6 @@ function checkauth(req, res, next) {
               errorMessage: error
             })
           })
-
-            req.user = decoded;
-            return next();
         }
     });
 }
@@ -61,59 +53,6 @@ function checkauth(req, res, next) {
 // function checkauth(req, res, next) {
 //   next()
 // }
-
-function checkToken(req, res) {
-    let token = req.body.token || req.query.token || req.headers['x-auth'] || req.headers['x-access-token'] || req.headers['authorization'];
-    if (!token) {
-        return res.status(403).json({errorMessage: 'Токен отсутствует!'});
-    }
-    // Get auth header value if it is bearer
-    const bearerHeader = req.headers['authorization'];
-
-    console.log(req.headers);
-    // Check if bearer is undefined
-    if(typeof bearerHeader !== 'undefined') {
-      // Split at the space
-      const bearer = bearerHeader.split(' ');
-      // Get token from array
-      const bearerToken = bearer[1];
-      // Set the token
-      token = bearerToken;
-    }
-
-    // jwt.verify(token, process.env.SECRET, function (err, decoded) {
-    jwt.verify(token, 'anySecretKey', function (err, decoded) {
-        if (err) {
-            return res.status(403).json({
-                errorMessage: err
-            });
-        } else {
-          console.log({decoded});
-          db.User.findOne({
-            where:{
-              username: decoded.data.username,
-              email: decoded.data.email
-              // password: decoded.data.password
-            }
-          }).then(user => {
-            if(!user) {
-              return res.status(403).json({errorMessage: 'Token is not valid'})
-            } else {
-              return res.json({
-                  message: 'Token valid',
-                  decoded
-              });
-            }
-          }).catch(error => {
-            console.error('Opps', error)
-            res.json({
-              errorMessage: error
-            })
-          })
-
-        }
-    });
-}
 
 
 async function login(req, res, next) {
@@ -139,15 +78,16 @@ async function login(req, res, next) {
           });
       } else {
         if (bcrypt.compareSync(password, user.password)) {
-            let token = jwt.sign({data: user}, 'anySecretKey', {expiresIn: 60 * 60 * 24 * 30});
+          // expiresIn: 60 * 60 * 24 = 1 day
+            let token = jwt.sign({data: {username: user.username, email: user.email}}, 'anySecretKey', {expiresIn: 60 * 60 * 24});
             // let token = jwt.sign({data: user}, process.env.SECRET, {expiresIn: 60 * 60 * 24 * 30});
             res.status(200).json({
                 data: {token}
             });
         } else {
-            res.status(403).json({
-                message: 'Некорректный пароль'
-            });
+          res.status(403).json({
+            message: 'Некорректный пароль'
+          });
         }
       }
     } catch (error) {
@@ -161,7 +101,6 @@ async function login(req, res, next) {
 
 module.exports = {
   login: login,
-  checkToken: checkToken,
   checkauth: checkauth
 
 }

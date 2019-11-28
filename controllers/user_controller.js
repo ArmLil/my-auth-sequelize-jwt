@@ -9,12 +9,18 @@ const saltRounds = 10;
 async function getUsers(req, res) {
   console.log('function getUsers');
   try {
-    const users = await db.User.findAndCountAll({
+    let users = await db.User.findAndCountAll({
       include: [{
           model: db.Article,
           as: "articles"
         }]
     });
+
+    users = users.rows.map(user => {
+      delete user.dataValues.password
+      return user
+    })
+
     res.json({
       users: users.rows,
       count: users.count
@@ -31,13 +37,15 @@ async function getUsers(req, res) {
 async function getUserById(req, res) {
   console.log('function getUserById');
   try {
-    const user = await db.User.findByPk(req.params.id,
+    let user = await db.User.findByPk(req.params.id,
     {
       include: [{
           model: db.Article,
           as: "articles"
         }]
     });
+
+    delete user.dataValues.password
     res.json({user})
   } catch(error) {
     console.error(error)
@@ -54,7 +62,6 @@ async function registerUser(req, res) {
     //do not let user to create his username with a username which already exists
     const findUserByUsername = await db.User.findOne({where:{username: req.body.username}})
     if (findUserByUsername) {
-      console.log('findUserByUsername=', findUserByUsername.toJSON());
         throw new Error('validationError: User with this username already exists!')
     }
 
@@ -62,7 +69,6 @@ async function registerUser(req, res) {
     //do not let user to update his email with an email which already exists
     const findUserByEmail = await db.User.findOne({where:{email: req.body.email}})
     if (findUserByEmail) {
-      console.log('findUserByEmail=', findUserByEmail.toJSON());
         throw new Error('validationError: User with this email already exists!')
     }
 
