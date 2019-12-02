@@ -23,7 +23,7 @@ async function getUsers(req, res) {
     });
 
     res.json({
-      users: users.rows,
+      users: users,
       count: users.count
     });
   } catch (error) {
@@ -59,8 +59,6 @@ async function getUserById(req, res) {
 async function registerUser(req, res) {
   console.log("function registerUser");
   try {
-    //check username
-    //do not let user to create his username with a username which already exists
     const findUserByUsername = await db.User.findOne({
       where: { username: req.body.username }
     });
@@ -70,8 +68,6 @@ async function registerUser(req, res) {
       );
     }
 
-    //check email
-    //do not let user to update his email with an email which already exists
     const findUserByEmail = await db.User.findOne({
       where: { email: req.body.email }
     });
@@ -144,6 +140,11 @@ async function deleteUser(req, res) {
     if (!user)
       throw new Error("validationError: User by this id is not found!");
     await user.destroy();
+    await db.Article.destroy({
+      where: {
+        user_id: user.id
+      }
+    });
     res.json({
       massage: `user ${user.username}, ${user.email}, ${user.id} is deleted`
     });

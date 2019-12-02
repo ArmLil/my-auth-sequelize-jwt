@@ -20,10 +20,14 @@ module.exports = (sequelize, DataTypes) => {
           msg: "Email address already in use!"
         }
       },
-      password: DataTypes.TEXT
+      password: DataTypes.TEXT,
+      email_confirmed: DataTypes.BOOLEAN
     },
     {
-      timestamps: false
+      timestamps: true,
+      paranoid: true,
+      underscored: true,
+      tableName: "users"
     }
   );
   User.associate = function(models) {

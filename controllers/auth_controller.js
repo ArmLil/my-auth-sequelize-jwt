@@ -24,7 +24,7 @@ function checkauth(req, res, next) {
       .status(403)
       .json({ success: false, errorMessage: "Token is not provided!" });
   }
-  jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
+  jwt.verify(token, process.env.TOKEN_SECRET, function(err, decoded) {
     if (err) {
       console.error(err);
       return res.status(403).json({
@@ -33,7 +33,7 @@ function checkauth(req, res, next) {
     } else {
       db.User.findOne({
         where: {
-          email: decoded.data.email
+          id: decoded.data.id
         }
       })
         .then(user => {
@@ -88,7 +88,7 @@ async function login(req, res, next) {
       if (bcrypt.compareSync(password, user.password)) {
         // expiresIn: 60 * 60 * 24 = 1 day
         let token = jwt.sign(
-          { data: { username: user.username, email: user.email } },
+          { data: { id: user.id, username: user.username, email: user.email } },
           process.env.TOKEN_SECRET,
           { expiresIn: 60 * 60 * 24 }
         );

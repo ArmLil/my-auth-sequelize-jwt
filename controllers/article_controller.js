@@ -1,6 +1,7 @@
 "use strict";
 
 let db = require("../models");
+const jwt = require("jsonwebtoken");
 
 async function getArticles(req, res) {
   try {
@@ -59,8 +60,6 @@ async function getArticleById(req, res) {
 async function createArticle(req, res) {
   console.log("function createArticle");
   try {
-    //check title
-    //do not let article to update his title with a title which already exists
     const findArticleByTitle = await db.Article.findOne({
       where: { title: req.body.title }
     });
@@ -69,13 +68,26 @@ async function createArticle(req, res) {
         "validationError: Article with this title already exists!"
       );
     }
+    let user_id;
+    if (req.token) {
+      jwt.verify(req.token, process.env.TOKEN_SECRET, function(err, decoded) {
+        console.log({ decoded });
+        if (err) {
+          console.error(err);
+        } else {
+          user_id = decoded.data.id;
+        }
+      });
+    } else {
+      user_id = req.body.user_id;
+    }
 
     const article = await db.Article.findOrCreate({
       where: {
         title: req.body.title,
         content: req.body.content,
         author: req.body.author,
-        user_id: req.body.user_id
+        user_id
       }
     });
 

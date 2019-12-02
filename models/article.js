@@ -24,7 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.UUID
     },
     {
-      timestamps: false
+      timestamps: true,
+      paranoid: true,
+      underscored: true,
+      tableName: "articles"
     }
   );
   Article.associate = function(models) {

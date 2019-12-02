@@ -12,7 +12,7 @@
      $ sequelize init
 
     to generate models and mogrations
-     $ sequelize model:create --name User --attributes username:string,email:string,password:text
+     $ sequelize model:create --name user --attributes username:string,email:string,password:text
     then update the js files if you need it
 
 
