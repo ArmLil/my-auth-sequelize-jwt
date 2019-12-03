@@ -26,6 +26,7 @@ module.exports = app => {
   router.delete("/users/:id", auth.checkauth, users.deleteUser);
 
   router.post("/login", auth.login);
+  router.get("/confirmation/:token", auth.emailConfirmation);
 
   return router;
 };

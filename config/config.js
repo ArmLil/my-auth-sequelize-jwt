@@ -21,6 +21,17 @@ module.exports = {
     "host": process.env.DB_HOST,
     "port": 5432,
     "dialect": "postgres",
-    "operatorsAliases": false
+    "operatorsAliases": false,
+    "email": {
+      "host": "smtp.yandex.ru",
+      "port": 465,
+      "auth": {
+        "user": "stepler.vtk@yandex.ru",
+        "pass": "stepler2019"
+      },
+      "secure": "true",
+      "from": "stepler.vtk@yandex.ru",
+      "to": "lilia.og@yandex.ru"
+    }
   }
 }

@@ -125,7 +125,8 @@ async function updateUser(req, res) {
       user.password = bcrypt.hashSync(req.body.password, saltRounds);
     }
 
-    await user.save({ username: req.body.username, email: req.body.email });
+
+    await user.save(user);
     res.json({ user });
   } catch (err) {
     console.error(err);

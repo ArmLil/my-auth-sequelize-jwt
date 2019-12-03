@@ -1,6 +1,7 @@
 let db = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const emailSender = require("./email_notification_controller");
 
 function checkauth(req, res, next) {
   let token =
@@ -22,7 +23,7 @@ function checkauth(req, res, next) {
   if (!token) {
     return res
       .status(403)
-      .json({ success: false, errorMessage: "Token is not provided!" });
+      .json({ success: false, errorMessage: "Token is not provided" });
   }
   jwt.verify(token, process.env.TOKEN_SECRET, function(err, decoded) {
     if (err) {
@@ -40,10 +41,21 @@ function checkauth(req, res, next) {
           if (!user) {
             return res
               .status(403)
-              .json({ errorMessage: "User with this token does not exist!" });
+              .json({ errorMessage: "User with this token does not exist" });
+          } else if (!user.email_confirmed) {
+            // to disable email confirmation discomment next 3 lines of code
+
+            // req.user = decoded;
+            // console.log("Token is valid", decoded);
+            // return next();
+
+            emailSender(user, req.headers.host, token);
+            return res
+              .status(403)
+              .json({ errorMessage: "Email is not confirmed" });
           } else {
             req.user = decoded;
-            console.log("Token is valid!", decoded);
+            console.log("Token is valid", decoded);
             return next();
           }
         })
@@ -69,7 +81,7 @@ async function login(req, res, next) {
 
   if (!username || !password) {
     res.status(403).json({
-      errorMessage: "Имя пользователя или пароль отсутствуют"
+      errorMessage: "Username or password is not provided"
     });
   }
 
@@ -82,13 +94,20 @@ async function login(req, res, next) {
 
     if (!user) {
       res.status(403).json({
-        errorMessage: "Пользователя с таким именем не существует"
+        errorMessage: "User with this username does not exist"
       });
     } else {
       if (bcrypt.compareSync(password, user.password)) {
         // expiresIn: 60 * 60 * 24 = 1 day
         let token = jwt.sign(
-          { data: { id: user.id, username: user.username, email: user.email } },
+          {
+            data: {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              email_confirmed: user.email_confirmed
+            }
+          },
           process.env.TOKEN_SECRET,
           { expiresIn: 60 * 60 * 24 }
         );
@@ -97,7 +116,7 @@ async function login(req, res, next) {
         });
       } else {
         res.status(403).json({
-          message: "Некорректный пароль"
+          errorMessage: "Password is not valid"
         });
       }
     }
@@ -109,7 +128,49 @@ async function login(req, res, next) {
   }
 }
 
+function emailConfirmation(req, res) {
+  console.log("function emailConfirmation");
+
+  jwt.verify(req.params.token, process.env.TOKEN_SECRET, function(
+    err,
+    decoded
+  ) {
+    if (err) {
+      console.error(err);
+      return res.status(403).json({
+        errorMessage: err.message
+      });
+    } else {
+      db.User.findByPk(decoded.data.id)
+        .then(user => {
+          if (!user) res.json({ errorMessage: "user is not found" });
+          user.email_confirmed = true;
+          user.save(user);
+          let token = jwt.sign(
+            {
+              data: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                email_confirmed: user.email_confirmed
+              }
+            },
+            process.env.TOKEN_SECRET,
+            { expiresIn: 60 * 60 * 24 }
+          );
+          delete user.dataValues.password;
+          res.json({ data: { user, message: "email is confirmed", token } });
+        })
+        .catch(error => {
+          console.error("Opps", error);
+          res.json({ errorMessage: error });
+        });
+    }
+  });
+}
+
 module.exports = {
   login: login,
-  checkauth: checkauth
+  checkauth: checkauth,
+  emailConfirmation: emailConfirmation
 };
