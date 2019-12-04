@@ -21,10 +21,11 @@ module.exports = app => {
 
   router.get("/users", auth.checkauth, users.getUsers);
   router.get("/users/:id", auth.checkauth, users.getUserById);
-  router.post("/users", users.registerUser);
+  router.post("/users", auth.checkauth, users.createUser);
   router.put("/users/:id", auth.checkauth, users.updateUser);
   router.delete("/users/:id", auth.checkauth, users.deleteUser);
 
+  router.post("/register", auth.register);
   router.post("/login", auth.login);
   router.get("/confirmation/:token", auth.emailConfirmation);
 

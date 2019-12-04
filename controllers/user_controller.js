@@ -56,7 +56,7 @@ async function getUserById(req, res) {
   }
 }
 
-async function registerUser(req, res) {
+async function createUser(req, res) {
   console.log("function registerUser");
   try {
     const findUserByUsername = await db.User.findOne({
@@ -125,7 +125,6 @@ async function updateUser(req, res) {
       user.password = bcrypt.hashSync(req.body.password, saltRounds);
     }
 
-
     await user.save(user);
     res.json({ user });
   } catch (err) {
@@ -158,7 +157,7 @@ async function deleteUser(req, res) {
 module.exports = {
   getUsers: getUsers,
   getUserById: getUserById,
-  registerUser: registerUser,
+  createUser: createUser,
   updateUser: updateUser,
   deleteUser: deleteUser
 };

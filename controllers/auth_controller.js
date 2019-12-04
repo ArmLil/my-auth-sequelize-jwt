@@ -2,6 +2,7 @@ let db = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const emailSender = require("./email_notification_controller");
+const saltRounds = 10;
 
 function checkauth(req, res, next) {
   let token =
@@ -16,7 +17,6 @@ function checkauth(req, res, next) {
   if (bearerHeader) {
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
-    // Set the token
     req.token = bearerToken;
     token = bearerToken;
   }
@@ -49,10 +49,14 @@ function checkauth(req, res, next) {
             // console.log("Token is valid", decoded);
             // return next();
 
-            emailSender(user, req.headers.host, token);
-            return res
-              .status(403)
-              .json({ errorMessage: "Email is not confirmed" });
+            emailSender(user[0].dataValues, req.headers.host, token, result => {
+              console.log("result = ", result.errorMessage, result);
+              if (result.errorMessage) {
+                res.json(result);
+              } else {
+                res.json({ data: { user, token, message: result.message } });
+              }
+            });
           } else {
             req.user = decoded;
             console.log("Token is valid", decoded);
@@ -75,6 +79,70 @@ function checkauth(req, res, next) {
 //   next()
 // }
 
+async function register(req, res) {
+  console.log("function registerUser");
+  try {
+    const findUserByUsername = await db.User.findOne({
+      where: { username: req.body.username }
+    });
+    if (findUserByUsername) {
+      throw new Error(
+        "validationError: User with this username already exists!"
+      );
+    }
+
+    const findUserByEmail = await db.User.findOne({
+      where: { email: req.body.email }
+    });
+    if (findUserByEmail) {
+      throw new Error("validationError: User with this email already exists!");
+    }
+
+    // needs to think if after adding in db we have errors, so mabe this part shoul be implemented later
+    const user = await db.User.findOrCreate({
+      where: { username: req.body.username, email: req.body.email },
+      defaults: {
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, saltRounds)
+      }
+    });
+
+    let token = jwt.sign(
+      {
+        data: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          email_confirmed: user.email_confirmed
+        }
+      },
+      process.env.TOKEN_SECRET,
+      { expiresIn: 60 * 60 * 24 }
+    );
+
+    await delete user[0].dataValues.password;
+
+    // to disable email confirmation comment these emailSender part and then
+    // discomment res.json({ data: { user, token }});
+
+    await emailSender(user[0].dataValues, req.headers.host, token, result => {
+      console.log("result = ", result.errorMessage, result);
+      if (result.errorMessage) {
+        res.json(result);
+      } else {
+        res.json({ data: { user, token, message: result.message } });
+      }
+    });
+
+    // res.json({ data: { user, token }});
+  } catch (error) {
+    console.error(error);
+    res.json({
+      errorMessage: error.message
+    });
+  }
+}
+
 async function login(req, res, next) {
   let username = req.body.username;
   let password = req.body.password;
@@ -95,6 +163,21 @@ async function login(req, res, next) {
     if (!user) {
       res.status(403).json({
         errorMessage: "User with this username does not exist"
+      });
+    } else if (!user.email_confirmed) {
+      // to disable email confirmation discomment next 3 lines of code
+
+      // req.user = decoded;
+      // console.log("Token is valid", decoded);
+      // return next();
+
+      emailSender(user[0].dataValues, req.headers.host, token, result => {
+        console.log("result = ", result.errorMessage, result);
+        if (result.errorMessage) {
+          res.json(result);
+        } else {
+          res.json({ data: { user, token, message: result.message } });
+        }
       });
     } else {
       if (bcrypt.compareSync(password, user.password)) {
@@ -170,6 +253,7 @@ function emailConfirmation(req, res) {
 }
 
 module.exports = {
+  register: register,
   login: login,
   checkauth: checkauth,
   emailConfirmation: emailConfirmation
