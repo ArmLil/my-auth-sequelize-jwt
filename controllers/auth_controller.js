@@ -49,8 +49,7 @@ function checkauth(req, res, next) {
             // console.log("Token is valid", decoded);
             // return next();
 
-            emailSender(user[0].dataValues, req.headers.host, token, result => {
-              console.log("result = ", result.errorMessage, result);
+            emailSender(user.dataValues, req.headers.host, token, result => {
               if (result.errorMessage) {
                 res.json(result);
               } else {
@@ -107,13 +106,14 @@ async function register(req, res) {
       }
     });
 
+    const { id, username, email, email_confirmed } = user[0].dataValues;
     let token = jwt.sign(
       {
         data: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          email_confirmed: user.email_confirmed
+          id,
+          username,
+          email,
+          email_confirmed
         }
       },
       process.env.TOKEN_SECRET,
@@ -126,7 +126,6 @@ async function register(req, res) {
     // discomment res.json({ data: { user, token }});
 
     await emailSender(user[0].dataValues, req.headers.host, token, result => {
-      console.log("result = ", result.errorMessage, result);
       if (result.errorMessage) {
         res.json(result);
       } else {
@@ -164,44 +163,46 @@ async function login(req, res, next) {
       res.status(403).json({
         errorMessage: "User with this username does not exist"
       });
-    } else if (!user.email_confirmed) {
-      // to disable email confirmation discomment next 3 lines of code
+    }
 
-      // req.user = decoded;
-      // console.log("Token is valid", decoded);
-      // return next();
+    if (bcrypt.compareSync(password, user.password)) {
+      // expiresIn: 60 * 60 * 24 = 1 day
+      let token = jwt.sign(
+        {
+          data: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            email_confirmed: user.email_confirmed
+          }
+        },
+        process.env.TOKEN_SECRET,
+        { expiresIn: 60 * 60 * 24 }
+      );
 
-      emailSender(user[0].dataValues, req.headers.host, token, result => {
-        console.log("result = ", result.errorMessage, result);
-        if (result.errorMessage) {
-          res.json(result);
-        } else {
-          res.json({ data: { user, token, message: result.message } });
-        }
-      });
-    } else {
-      if (bcrypt.compareSync(password, user.password)) {
-        // expiresIn: 60 * 60 * 24 = 1 day
-        let token = jwt.sign(
-          {
-            data: {
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              email_confirmed: user.email_confirmed
-            }
-          },
-          process.env.TOKEN_SECRET,
-          { expiresIn: 60 * 60 * 24 }
-        );
+      if (!user.email_confirmed) {
+        // to disable email confirmation discomment next 3 lines of code
+
+        // req.user = decoded;
+        // console.log("Token is valid", decoded);
+        // return next();
+
+        emailSender(user.dataValues, req.headers.host, token, result => {
+          if (result.errorMessage) {
+            res.json(result);
+          } else {
+            res.json({ data: { user, token, message: result.message } });
+          }
+        });
+      } else {
         res.status(200).json({
           data: { token }
         });
-      } else {
-        res.status(403).json({
-          errorMessage: "Password is not valid"
-        });
       }
+    } else {
+      res.status(403).json({
+        errorMessage: "Password is not valid"
+      });
     }
   } catch (error) {
     console.error(error);

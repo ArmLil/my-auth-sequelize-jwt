@@ -50,7 +50,10 @@ module.exports = function emailSender(user, host, token, cb) {
       return cb({ errorMessage: err.message });
     } else {
       console.log("info = ", info);
-      return cb({ message: "Check " + email.to + "for confirmation, ", info });
+      return cb({
+        message: "Check " + user.email + " for confirmation, ",
+        info
+      });
     }
   });
 };

@@ -15,7 +15,9 @@ async function getArticles(req, res) {
     });
 
     articles = articles.rows.map(article => {
-      delete article.dataValues.user.dataValues.password;
+      if (article.dataValues.user) {
+        delete article.dataValues.user.dataValues.password;
+      }
       return article;
     });
 
@@ -101,12 +103,11 @@ async function createArticle(req, res) {
 }
 
 async function updateArticle(req, res) {
+  console.log("function updateArticle");
   try {
     const article = await db.Article.findByPk(req.params.id);
     if (!article)
       throw new Error("validationError: Article by this id is not found!");
-
-    console.log("article=", article.toJSON(), "req.body=", req.body);
 
     //check title
     //do not let article to update his title with an title which already exists
