@@ -146,7 +146,7 @@ async function login(req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
 
-  if (!username || !password) {
+  if (!email || !password) {
     res.status(403).json({
       errorMessage: "Email or password is not provided"
     });
