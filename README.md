@@ -1,12 +1,14 @@
 ### Project with node.js, JWT, authentication, sequelize
 
- #### Useful links
+#### Useful links
 
-  https://gist.github.com/vapurrmaid/a111bf3fc0224751cb2f76532aac2465
+https://gist.github.com/vapurrmaid/a111bf3fc0224751cb2f76532aac2465
 
-  https://scotch.io/tutorials/getting-started-with-node-express-and-postgres-using-sequelize
+https://scotch.io/tutorials/getting-started-with-node-express-and-postgres-using-sequelize
 
- ### Hints
+https://learning.getpostman.com/docs/postman/sending-api-requests/authorization/#bearer-token
+
+### Hints
 
     to initialize sequelize
      $ sequelize init
@@ -19,7 +21,15 @@
     create tables in db via migrations
        $ sequelize db:migrate
 
- ### to run the Project
+#### setup datasource
+
+    1.install postgres if do not have then follow the steps bellow
+      $ sudo -u postgres psql
+      postgres=# create database auth_jwt_sequelize;
+      postgres=# create user auth_jwt_sequelize_user with encrypted password '111111';
+      postgres=# grant all privileges on database auth_jwt_sequelize to auth_jwt_sequelize_user;
+
+### to run the Project
 
     $ git clone https://github.com/ArmLil/my-auth-sequelize-jwt.git
     $ cd my-auth-sequelize-jwt.git
