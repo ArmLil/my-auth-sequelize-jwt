@@ -143,25 +143,25 @@ async function register(req, res) {
 }
 
 async function login(req, res, next) {
-  let username = req.body.username;
+  let email = req.body.email;
   let password = req.body.password;
 
   if (!username || !password) {
     res.status(403).json({
-      errorMessage: "Username or password is not provided"
+      errorMessage: "Email or password is not provided"
     });
   }
 
   try {
     const user = await db.User.findOne({
       where: {
-        username: req.body.username
+        email: req.body.email
       }
     });
 
     if (!user) {
       res.status(403).json({
-        errorMessage: "User with this username does not exist"
+        errorMessage: "User with this email does not exist"
       });
     }
 
