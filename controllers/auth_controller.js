@@ -85,16 +85,18 @@ async function register(req, res) {
       where: { username: req.body.username }
     });
     if (findUserByUsername) {
-      throw new Error(
-        "validationError: User with this username already exists!"
-      );
+      return res.status(403).json({errorMessage: "User with this username already exists!"})
+      // throw new Error(
+      //   "validationError: User with this username already exists!"
+      // );
     }
 
     const findUserByEmail = await db.User.findOne({
       where: { email: req.body.email }
     });
     if (findUserByEmail) {
-      throw new Error("validationError: User with this email already exists!");
+      return res.status(403).json({errorMessage: "User with this email already exists!"})
+      // throw new Error("validationError: User with this email already exists!");
     }
 
     // needs to think if after adding in db we have errors, so mabe this part shoul be implemented later
@@ -127,7 +129,7 @@ async function register(req, res) {
 
     await emailSender(user[0].dataValues, req.headers.host, token, result => {
       if (result.errorMessage) {
-        res.json(result);
+        return res.status(403).json(result);
       } else {
         res.json({ data: { user, token, message: result.message } });
       }
@@ -147,7 +149,7 @@ async function login(req, res, next) {
   let password = req.body.password;
 
   if (!email || !password) {
-    res.status(403).json({
+    return res.status(403).json({
       errorMessage: "Email or password is not provided"
     });
   }
@@ -160,7 +162,7 @@ async function login(req, res, next) {
     });
 
     if (!user) {
-      res.status(403).json({
+      return res.status(403).json({
         errorMessage: "User with this email does not exist"
       });
     }
@@ -189,24 +191,24 @@ async function login(req, res, next) {
 
         emailSender(user.dataValues, req.headers.host, token, result => {
           if (result.errorMessage) {
-            res.json(result);
+            return res.json(result);
           } else {
-            res.json({ data: { user, token, message: result.message } });
+            return res.json({ data: { user, token, message: result.message } });
           }
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           data: { token }
         });
       }
     } else {
-      res.status(403).json({
+      return res.status(403).json({
         errorMessage: "Password is not valid"
       });
     }
   } catch (error) {
     console.error(error);
-    res.json({
+    return res.json({
       errorMessage: error.message
     });
   }
