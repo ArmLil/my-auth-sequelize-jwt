@@ -86,9 +86,6 @@ async function register(req, res) {
     });
     if (findUserByUsername) {
       return res.status(403).json({errorMessage: "User with this username already exists!"})
-      // throw new Error(
-      //   "validationError: User with this username already exists!"
-      // );
     }
 
     const findUserByEmail = await db.User.findOne({
@@ -96,10 +93,8 @@ async function register(req, res) {
     });
     if (findUserByEmail) {
       return res.status(403).json({errorMessage: "User with this email already exists!"})
-      // throw new Error("validationError: User with this email already exists!");
     }
 
-    // needs to think if after adding in db we have errors, so mabe this part shoul be implemented later
     const user = await db.User.findOrCreate({
       where: { username: req.body.username, email: req.body.email },
       defaults: {
@@ -229,7 +224,7 @@ function emailConfirmation(req, res) {
     } else {
       db.User.findByPk(decoded.data.id)
         .then(user => {
-          if (!user) res.json({ errorMessage: "user is not found" });
+          if (!user) res.status(403).json({ errorMessage: "user is not found" });
           user.email_confirmed = true;
           user.save(user);
           let token = jwt.sign(
@@ -245,7 +240,8 @@ function emailConfirmation(req, res) {
             { expiresIn: 60 * 60 * 24 }
           );
           delete user.dataValues.password;
-          res.json({ data: { user, message: "email is confirmed", token } });
+          res.render('home', {user})
+          // res.json({ data: { user, message: "email is confirmed", token } });
         })
         .catch(error => {
           console.error("Opps", error);

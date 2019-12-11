@@ -3,6 +3,7 @@
 var express = require("express");
 var app = express();
 require("dotenv").config();
+var exphbs  = require('express-handlebars');
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 //Import routes
@@ -23,6 +24,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use("/api/v1/", api);
+
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+app.set('views', 'public/views');
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
