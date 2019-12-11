@@ -27,7 +27,7 @@ module.exports = app => {
 
   router.post("/register", auth.register);
   router.post("/login", auth.login);
-  router.get("/confirmation/:token", auth.emailConfirmation);
+  router.get("/confirmation/:token", auth.emailConfirmation, auth.showHome);
 
   return router;
 };

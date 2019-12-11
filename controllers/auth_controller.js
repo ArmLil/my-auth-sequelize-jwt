@@ -209,7 +209,7 @@ async function login(req, res, next) {
   }
 }
 
-function emailConfirmation(req, res) {
+function emailConfirmation(req, res, next) {
   console.log("function emailConfirmation");
 
   jwt.verify(req.params.token, process.env.TOKEN_SECRET, function(
@@ -240,7 +240,8 @@ function emailConfirmation(req, res) {
             { expiresIn: 60 * 60 * 24 }
           );
           delete user.dataValues.password;
-          res.render('home', {user})
+          next()
+          // res.render('home', {user})
           // res.json({ data: { user, message: "email is confirmed", token } });
         })
         .catch(error => {
@@ -251,9 +252,16 @@ function emailConfirmation(req, res) {
   });
 }
 
+function showHome(req, res) {
+  res.statusCode = 302;
+  res.setHeader("Location", "http://localhost:4200/overview");
+  res.end();
+}
+
 module.exports = {
   register: register,
   login: login,
   checkauth: checkauth,
-  emailConfirmation: emailConfirmation
+  emailConfirmation: emailConfirmation,
+  showHome: showHome
 };
