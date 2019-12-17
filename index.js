@@ -2,6 +2,10 @@
 
 var express = require("express");
 var app = express();
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 require("dotenv").config();
 var exphbs  = require('express-handlebars');
 const logger = require("morgan");
@@ -23,11 +27,18 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
+app.get('/', function (req, res) {
+  console.log('app.get(/)');
+  res.sendFile(__dirname + '/index.html');
+});
+
 app.use("/api/v1/", api);
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 app.set('views', 'public/views');
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -36,6 +47,21 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-app.listen(3000, function() {
+
+// io.on('connection', function (socket) {
+//   console.log('user connected...');
+//   socket.emit('news', { hello: 'world' });
+//   socket.on('my other event', function (data) {
+//     console.log('this is on server side', data);
+//   });
+//   socket.on("disconnect", ()=>{
+//     console.log("Disconnected")
+//   })
+// });
+
+const port = process.env.PORT || 3000;
+
+server.listen(port, function() {
+  console.log(`server listening on port ${port}`);
   // db.sequelize.sync();
 });

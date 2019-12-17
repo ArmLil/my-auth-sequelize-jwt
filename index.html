@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+  <h3> Hello from html </h3>
+  <p id='demo'> Hi there <p>
+    <input type="text" id="message" name="message" value="Hi">
+    <button type="button" name="button" onClick="handleClick()">Submit</button>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io.connect('http://localhost:3000');
+    function handleClick() {
+      var x = document.getElementById("message");
+      x.value = "red";
+    }
+    socket.on('news', function (data) {
+      console.log('this is on client side', data, Object.values(data)[0]);
+      var p = document.getElementById("demo");
+      console.log('p = ', p.innerHTML);
+      p.innerHTML = p.innerHTML + 'everyone in the ' + Object.values(data)[0]
+
+      socket.emit('my other event', { my: 'some data from client' });
+    });
+  </script>
+</html>
