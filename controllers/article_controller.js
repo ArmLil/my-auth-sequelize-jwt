@@ -14,6 +14,8 @@ async function getArticles(req, res) {
       ]
     });
 
+    let count = articles.count;
+
     articles = articles.rows.map(article => {
       if (article.dataValues.user) {
         delete article.dataValues.user.dataValues.password;
@@ -23,7 +25,7 @@ async function getArticles(req, res) {
 
     res.json({
       articles,
-      count: articles.count
+      count
     });
   } catch (error) {
     console.error(error);
@@ -48,7 +50,9 @@ async function getArticleById(req, res) {
       throw new Error("validationError: Article with this id is not found!");
     }
 
-    delete article.dataValues.user.dataValues.password;
+    if (article.dataValues.user) {
+      delete article.dataValues.user.dataValues.password;
+    }
 
     res.json({ article });
   } catch (error) {
@@ -62,35 +66,34 @@ async function getArticleById(req, res) {
 async function createArticle(req, res) {
   console.log("function createArticle");
   try {
-    const findArticleByTitle = await db.Article.findOne({
-      where: { title: req.body.title }
-    });
-    if (findArticleByTitle) {
-      throw new Error(
-        "validationError: Article with this title already exists!"
-      );
+    const articles = await db.Article.findAndCountAll();
+
+    if (articles.count !== 0) {
+      const findArticleByTitle = await db.Article.findOne({
+        where: { title: req.body.title }
+      });
+      if (findArticleByTitle) {
+        throw new Error(
+          "validationError: Article with this title already exists!"
+        );
+      }
     }
     let user_id;
-    if (req.token) {
-      jwt.verify(req.token, process.env.TOKEN_SECRET, function(err, decoded) {
-        console.log({ decoded });
-        if (err) {
-          console.error(err);
-        } else {
-          user_id = decoded.data.id;
-        }
-      });
-    } else {
+    if (req.user) {
+      user_id = req.user.data.id;
+    } else if (req.body.user_id) {
       user_id = req.body.user_id;
     }
 
+    let options = {};
+    if (req.body.title) options.title = req.body.title;
+    if (req.body.content) options.content = req.body.content;
+    if (req.body.author) options.author = req.body.author;
+    options.user_id = user_id;
+    console.log({ options });
+
     const article = await db.Article.findOrCreate({
-      where: {
-        title: req.body.title,
-        content: req.body.content,
-        author: req.body.author,
-        user_id
-      }
+      where: options
     });
 
     res.json({ article });
