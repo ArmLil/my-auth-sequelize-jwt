@@ -85,14 +85,18 @@ async function register(req, res) {
       where: { username: req.body.username }
     });
     if (findUserByUsername) {
-      return res.status(403).json({errorMessage: "User with this username already exists!"})
+      return res
+        .status(403)
+        .json({ errorMessage: "User with this username already exists!" });
     }
 
     const findUserByEmail = await db.User.findOne({
       where: { email: req.body.email }
     });
     if (findUserByEmail) {
-      return res.status(403).json({errorMessage: "User with this email already exists!"})
+      return res
+        .status(403)
+        .json({ errorMessage: "User with this email already exists!" });
     }
 
     const user = await db.User.findOrCreate({
@@ -224,7 +228,8 @@ function emailConfirmation(req, res, next) {
     } else {
       db.User.findByPk(decoded.data.id)
         .then(user => {
-          if (!user) res.status(403).json({ errorMessage: "user is not found" });
+          if (!user)
+            res.status(403).json({ errorMessage: "user is not found" });
           user.email_confirmed = true;
           user.save(user);
           let token = jwt.sign(
@@ -240,7 +245,7 @@ function emailConfirmation(req, res, next) {
             { expiresIn: 60 * 60 * 24 }
           );
           delete user.dataValues.password;
-          next()
+          next();
           // res.render('home', {user})
           // res.json({ data: { user, message: "email is confirmed", token } });
         })
