@@ -267,3 +267,65 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
                    createdAt: '2019-10-03 11:48:29.723+03'
                  }
              }
+
+    3. Users (include headers described in the beginning)
+
+     	1)  method - get
+           endpoint - /users
+           returns the list of users
+
+           expected response
+           {
+               "users": [
+                   {
+                       "id": "9d6f27ac-3367-4496-bd57-c54a986e68e4",
+                       "username": "username3",
+                       "email": "armlilhov@mail.ru",
+                       "email_confirmed": true,
+                       "createdAt": "2019-12-18T13:13:27.608Z",
+                       "updatedAt": "2019-12-18T14:20:43.240Z",
+                       "deletedAt": null
+                   },
+                   ......
+               ]
+           }
+
+       2) method-get
+          endpoint - /userById/:id
+          returns a single user by it's id
+
+          expected response
+
+          {
+            "user": {
+                "id": "9d6f27ac-3367-4496-bd57-c54a986e68e4",
+                "username": "username3",
+                "email": "armlilhov@mail.ru",
+                "email_confirmed": true,
+                "createdAt": "2019-12-18T13:13:27.608Z",
+                "updatedAt": "2019-12-18T14:20:43.240Z",
+                "deletedAt": null,
+                "articles": [
+                    {
+                        "id": "c3dfc42b-83a0-4829-81ae-4c4e12362ed2",
+                        "title": "test title 1",
+                        "content": "test content",
+                        "author": "Default author",
+                        "user_id": "9d6f27ac-3367-4496-bd57-c54a986e68e4",
+                        "createdAt": "2019-12-19T08:19:15.999Z",
+                        "updatedAt": "2019-12-19T08:19:15.999Z",
+                        "deletedAt": null
+                    },
+                    {
+                        "id": "cea17953-810c-4ada-903c-7ccd965bf3f0",
+                        "title": "test title 33",
+                        "content": "test content",
+                        "author": "Default author",
+                        "user_id": "9d6f27ac-3367-4496-bd57-c54a986e68e4",
+                        "createdAt": "2019-12-19T08:20:58.991Z",
+                        "updatedAt": "2019-12-19T08:20:58.991Z",
+                        "deletedAt": null
+                    }
+                ]
+            }
+        }
