@@ -1,23 +1,14 @@
 "use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("articles", {
+    return queryInterface.createTable("chatrooms", {
       id: {
-        type: Sequelize.UUID,
         allowNull: false,
         autoIncrement: false,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.UUID
       },
-      title: {
-        type: Sequelize.STRING
-      },
-      content: {
-        type: Sequelize.TEXT
-      },
-      author: {
-        type: Sequelize.STRING
-      },
-      userId: {
+      creatorId: {
         type: Sequelize.UUID,
         references: {
           model: "users", // name of Target model
@@ -26,15 +17,19 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL"
       },
+      name: {
+        type: Sequelize.STRING
+      },
+      chat_type: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date()
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date()
+        type: Sequelize.DATE
       },
       deletedAt: {
         type: Sequelize.DATE
@@ -42,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("articles");
+    return queryInterface.dropTable("chatrooms");
   }
 };

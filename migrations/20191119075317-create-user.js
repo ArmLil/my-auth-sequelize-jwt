@@ -23,18 +23,18 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
-      deleted_at: {
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: new Date()
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: new Date()
+      },
+      deletedAt: {
         type: Sequelize.DATE
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date()
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date()
       }
     });
   },

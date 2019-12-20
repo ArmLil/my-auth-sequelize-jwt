@@ -33,6 +33,7 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
       postgres=# create database auth_jwt_sequelize;
       postgres=# create user auth_jwt_sequelize_user with encrypted password '111111';
       postgres=# grant all privileges on database auth_jwt_sequelize to auth_jwt_sequelize_user;
+    2.$ sequelize db:migrate
 
 ### to run the Project
 
@@ -120,98 +121,66 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
 
     2. Chats (include headers described in the beginning)
 
-    	1)  method - get
+    	1) method - get
           endpoint - /chats
           returns the list of chats
           expected response
           {
-            [
-               {
-                 id: '65465465465696',
-                 name: 'classroom 123',
-                 chat_type: 'group',
-                 createdAt: '2019-10-04 11:48:29.723+03',
-                 creator: {
-                   user_id: 656546464,
-                   username: 'name1',
-                   email: 'any1@mail.ru',
-                   email_confirmed: true,
-                   createdAt: '2019-10-02 11:48:29.723+03'
-                 }
-               },
-               {
-                 id: '35465465465696',
-                 name: 'general',
-                 chat_type: 'general',
-                 createdAt: '2019-10-04 11:48:29.723+03',
-                 creator: {
-                   user_id: 856546464,
-                   username: 'name2',
-                   email: 'any2@mail.ru',
-                   email_confirmed: true,
-                   createdAt: '2019-10-03 11:48:29.723+03'
-                 }
-               },
-               ......
-             ]
-           }
+              "chatrooms": {
+                  "count": 3,
+                  "rows": [
+                      {
+                          "id": "bec51cbe-3bfa-4c49-8579-686bb651f653",
+                          "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                          "name": "classroom 10",
+                          "chat_type": "group",
+                          "createdAt": "2019-12-20T07:04:47.820Z",
+                          "updatedAt": "2019-12-20T07:04:47.820Z",
+                          "deletedAt": null
+                      },
+                      {
+                          "id": "1252f353-fd81-47ce-afe2-f1ec44167240",
+                          "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                          "name": "classroom 11",
+                          "chat_type": "group",
+                          "createdAt": "2019-12-20T07:12:39.163Z",
+                          "updatedAt": "2019-12-20T07:12:39.163Z",
+                          "deletedAt": null
+                      },
+                      {
+                          "id": "aa06ccee-fd56-4f39-ab0b-9237e8bd42c7",
+                          "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                          "name": "username3_username4",
+                          "chat_type": "pairs",
+                          "createdAt": "2019-12-20T07:26:41.550Z",
+                          "updatedAt": "2019-12-20T07:26:41.550Z",
+                          "deletedAt": null
+                      }
+                  ]
+              }
+          }
 
-     2) method-get
-        endpoint-a/getChatById/:id
-        returns a single chat by it's id
 
-        expected response
+      2) method - get
+         endpoint -/chatroomById/:id
+         returns a single chat by it's id
+
+         expected response
 
          {
-           id: '65465465465696',
-           name: 'classroom 123',
-           chat_type: 'group',
-           createdAt: '2019-10-04 11:48:29.723+03',
-           creator: {
-             user_id: 656546464,
-             username: 'name1',
-             email: 'any1@mail.ru',
-             email_confirmed: true,
-             createdAt: '2019-10-02 11:48:29.723+03'
-           },
-           members: [
-             {
-               user_id: 656546464,
-               username: 'any name',
-               email: 'any@mail.ru',
-               email_confirmed: true,
-               createdAt: '2019-10-02 11:48:29.723+03'
-             },
-             {
-               user_id: 656546464,
-               username: 'any name 1',
-               email: 'any1@mail.ru',
-               email_confirmed: true,
-               createdAt: '2019-10-03 11:48:29.723+03'
-             },
-             ......
-           ],
-           chat_messages: [
-             {
-               id: '6546546897',
-               writer: {
-                 user_id: 656546464,
-                 username: 'any name',
-                 email: 'any@mail.ru',
-                 email_confirmed: true,
-                 createdAt: '2019-10-02 11:48:29.723+03'
-               },
-               massage: 'any message',
-               chat_id: '989765564646',
-               createdAt: '2019-10-02 11:48:29.723+03'
-             },
-             .........
-           ]
+             "chatroom": {
+                 "id": "1252f353-fd81-47ce-afe2-f1ec44167240",
+                 "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                 "name": "classroom 11",
+                 "chat_type": "group",
+                 "createdAt": "2019-12-20T07:12:39.163Z",
+                 "updatedAt": "2019-12-20T07:12:39.163Z",
+                 "deletedAt": null
+             }
          }
 
-
-     3) 	method-post
-          endpoint - /chats
+      3) method-post
+         endpoint - /chats
           this creates a new chat
 
           1. example request body
@@ -219,24 +188,31 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
 
              {
                name: 'classroom 1',
-               chat_type: 'group',
+               chat_type: 'group'
              }
 
             expected response body
 
-             {
-               id: '65465465465696'
-               name: 'classroom 1',
-               chat_type: 'group',
-               createdAt: '2019-10-04 11:48:29.723+03'
-               creator: {
-                   user_id: 656546464,
-                   username: 'any name',
-                   email: 'any@mail.ru',
-                   email_confirmed: true,
-                   createdAt: '2019-10-02 11:48:29.723+03'
-                 }
-             }
+            {
+              "chat": [
+                  {
+                      "id": "2001e960-0cc8-4c86-9a30-c4c88550055c",
+                      "name": "classroom 5",
+                      "chat_type": "group",
+                      "updatedAt": "2019-12-19T10:37:15.469Z",
+                      "createdAt": "2019-12-19T10:37:15.469Z",
+                      "deletedAt": null,
+                      "creator": {
+                          "id": "9d6f27ac-3367-4496-bd57-c54a986e68e4",
+                          "username": "username3",
+                          "email": "armlilhov@mail.ru",
+                          "email_confirmed": true
+                      }
+                  },
+                  true
+              ]
+            }
+          }
 
           2. example request body
              if type is 'pairs' receiver_id is required
@@ -248,25 +224,34 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
 
              expected response body
              {
-               id: '8546546546569'
-               name: 'user1_user2',
-               chat_type: 'pairs',
-               createdAt: '2019-10-04 11:48:29.723+03'
-               creator: {
-                   user_id: 656546464,
-                   username: 'user1',
-                   email: 'any@mail.ru',
-                   email_confirmed: true,
-                   createdAt: '2019-10-02 11:48:29.723+03'
-                 },
-               receiver: {
-                   user_id: 656546464,
-                   username: 'user2',
-                   email: 'any2@mail.ru',
-                   email_confirmed: true,
-                   createdAt: '2019-10-03 11:48:29.723+03'
-                 }
-             }
+                "chatroom": [
+                    {
+                        "id": "aa06ccee-fd56-4f39-ab0b-9237e8bd42c7",
+                        "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                        "name": "username3_username4",
+                        "chat_type": "pairs",
+                        "createdAt": "2019-12-20T07:26:41.550Z",
+                        "updatedAt": "2019-12-20T07:26:41.550Z",
+                        "deletedAt": null,
+                        "receiver": {
+                            "id": "1d6f27ac-3367-4496-bd57-c54a986e68e3",
+                            "username": "username4",
+                            "email": "testmail@mail.ru",
+                            "email_confirmed": true,
+                            "createdAt": "2019-12-20T07:12:39.163Z",
+                            "updatedAt": "2019-12-20T07:12:39.163Z",
+                            "deletedAt": null
+                        },
+                        "creator": {
+                            "id": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                            "username": "username3",
+                            "email": "armlilhov@mail.ru",
+                            "email_confirmed": null
+                        }
+                    },
+                    false
+                ]
+            }
 
     3. Users (include headers described in the beginning)
 

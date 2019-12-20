@@ -1,7 +1,6 @@
 "use strict";
 
 let db = require("../models");
-const jwt = require("jsonwebtoken");
 
 async function getArticles(req, res) {
   try {
@@ -90,7 +89,6 @@ async function createArticle(req, res) {
     if (req.body.content) options.content = req.body.content;
     if (req.body.author) options.author = req.body.author;
     options.user_id = user_id;
-    console.log({ options });
 
     const article = await db.Article.findOrCreate({
       where: options

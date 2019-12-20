@@ -10,8 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4
       },
       title: {
-        type: DataTypes.STRING,
-        defaultValue: "Default title"
+        type: DataTypes.STRING
       },
       content: {
         type: DataTypes.TEXT,
@@ -21,12 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: "Default author"
       },
-      user_id: DataTypes.UUID
+      userId: DataTypes.UUID
     },
     {
       timestamps: true,
       paranoid: true,
-      underscored: true,
+      underscored: false,
       tableName: "articles"
     }
   );
@@ -34,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     Article.belongsTo(models.User, {
       as: "user",
       targetKey: "id",
-      foreignKey: "user_id"
+      foreignKey: "userId"
     });
   };
   return Article;

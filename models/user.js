@@ -26,14 +26,24 @@ module.exports = (sequelize, DataTypes) => {
     {
       timestamps: true,
       paranoid: true,
-      underscored: true,
+      underscored: false,
       tableName: "users"
     }
   );
   User.associate = function(models) {
     User.hasMany(models.Article, {
       as: "articles",
-      foreignKey: "user_id"
+      foreignKey: "userId"
+    });
+    User.hasMany(models.Chatroom, {
+      as: "chatrooms",
+      foreignKey: "creatorId"
+    });
+    User.belongsToMany(models.Chatroom, {
+      through: "MembersChatrooms",
+      as: "rooms",
+      foreignKey: "memberId",
+      otherKey: "chatroomId"
     });
   };
   return User;
