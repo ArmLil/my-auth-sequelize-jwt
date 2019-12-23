@@ -212,10 +212,38 @@ async function updateChatroom(req, res) {
   }
 }
 
+async function deleteChatroom(req, res) {
+  console.log("function deleteChatroom");
+  try {
+    const chatroom = await db.Chatroom.findByPk(req.params.id);
+    console.log({ chatroom });
+    if (!chatroom) {
+      return res.json({ errorMessage: "Chatroom by this id is not found!" });
+    }
+
+    if (chatroom.creatorId !== req.user.data.id)
+      return res.json({
+        errorMessage: "Only creator can delete the chatroom"
+      });
+
+    if (chatroom.chat_type !== "group")
+      return res.json({
+        errorMessage: 'Chatoom type should be "group" or "pairs"'
+      });
+    await chatroom.destroy();
+    res.json({
+      massage: `chatroom ${chatroom.name}, ${chatroom.id} is deleted`
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({ errorMessage: error.message });
+  }
+}
+
 module.exports = {
   getChatrooms: getChatrooms,
   getChatroomById: getChatroomById,
   createChatroom: createChatroom,
-  updateChatroom: updateChatroom
-  // deleteChatroom: deleteChatroom
+  updateChatroom: updateChatroom,
+  deleteChatroom: deleteChatroom
 };
