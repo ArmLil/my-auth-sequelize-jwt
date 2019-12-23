@@ -26,6 +26,7 @@ module.exports = app => {
   router.put("/chatrooms/:id", auth.checkauth, chatrooms.updateChatroom);
   router.delete("/chatrooms/:id", auth.checkauth, chatrooms.deleteChatroom);
   router.post("/memberToGroup", auth.checkauth, chatrooms.addMemberToGroup);
+  router.delete("/memberInGroup", auth.checkauth, chatrooms.deleteMemberInGroup);
 
   router.get("/users", auth.checkauth, users.getUsers);
   router.get("/userById/:id", auth.checkauth, users.getUserById);

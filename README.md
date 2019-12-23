@@ -119,7 +119,7 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
 
 
 
-    2. Chats (include headers described in the beginning)
+    2. Chatrooms (include headers described in the beginning)
 
     	1) method - get
           endpoint - /chats
@@ -253,77 +253,102 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
                 ]
             }
 
-            4)  method - put
-                endpoint - /chatrooms/:id
-                this updates a  chat with a name
+      4)  method - put
+          endpoint - /chatrooms/:id
+          this updates a  chat with a name
 
-                 id - is a chatroom id
-                 chatroom type should be group
+           id - is a chatroom id
+           chatroom type should be group
 
-                 example request body
+           example request body
 
-                 {
-                           "name": "classroom 50",
-                           "chat_type": "group"
-                       }
+           {
+                     "name": "classroom 50",
+                     "chat_type": "group"
+                 }
 
-                	 expected response body
+          	 expected response body
 
-                	 {
-                    "chatroom": {
-                        "id": "3edfbc7c-c939-4e9d-8bb3-a20eaaebaacb",
-                        "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
-                        "name": "classroom 50",
-                        "chat_type": "group",
-                        "createdAt": "2019-12-20T13:48:29.975Z",
-                        "updatedAt": "2019-12-23T07:47:33.017Z",
-                        "deletedAt": null
-                    }
-                }
+          	 {
+              "chatroom": {
+                  "id": "3edfbc7c-c939-4e9d-8bb3-a20eaaebaacb",
+                  "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                  "name": "classroom 50",
+                  "chat_type": "group",
+                  "createdAt": "2019-12-20T13:48:29.975Z",
+                  "updatedAt": "2019-12-23T07:47:33.017Z",
+                  "deletedAt": null
+              }
+          }
 
-            5) method - delete
-               endpoint - /chatrooms/:id
+      5) method - delete
+         endpoint - /chatrooms/:id
 
-                this deletes a  chatroom
-                id - is a chatroom id
-                chatroom type should be group or pairs
+          this deletes a  chatroom
+          id - is a chatroom id
+          chatroom type should be group or pairs
 
-                expected response body
+          expected response body
 
-                {
-                  "massage": "chatroom classroom 50, 3edfbc7c-c939-4e9d-8bb3-a20eaaebaacb is deleted"
-                }
+          {
+            "massage": "chatroom classroom 50, 3edfbc7c-c939-4e9d-8bb3-a20eaaebaacb is deleted"
+          }
 
-            6) method - post
-               endpoint - /memberToGroup
+      6) method - post
+         endpoint - /memberToGroup
 
-               this adds a new member to  chatroom
-               chatroom type should be group
+         this adds a new member to  chatroom
+         chatroom type should be group
 
-               example request body
+         example request body
 
-               {
+         {
 
-                 "memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
-                 "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8"
-               }
+           "memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
+           "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8"
+         }
 
-            	expected response body
+      	expected response body
 
-            	[
-                {
-                    "id": "8506acea-5076-41d1-8af4-177a753da155",
-                    "memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
-                    "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8",
-                    "memberName": "user10",
-                    "chatroomName": "classroom 2",
-                    "updatedAt": "2019-12-23T13:18:04.063Z",
-                    "createdAt": "2019-12-23T13:18:04.063Z",
-                    "deletedAt": null
-                },
-                true
-              ]
+      	[
+          {
+              "id": "8506acea-5076-41d1-8af4-177a753da155",
+              "memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
+              "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8",
+              "memberName": "user10",
+              "chatroomName": "classroom 2",
+              "updatedAt": "2019-12-23T13:18:04.063Z",
+              "createdAt": "2019-12-23T13:18:04.063Z",
+              "deletedAt": null
+          },
+          true
+        ]
 
+        7) method - delete
+           endpoint - /memberInGroup
+
+           this deletes a member from the  chatroom
+           chatroom type should be group
+
+           example request body
+
+            {
+            	"memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
+            	"chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8"
+            }
+
+        	expected response body
+
+          	{
+              "id": "8506acea-5076-41d1-8af4-177a753da155",
+              "memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
+              "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8",
+              "memberName": "user10",
+              "chatroomName": "classroom 2",
+              "createdAt": "2019-12-23T13:18:04.063Z",
+              "updatedAt": "2019-12-23T13:44:24.957Z",
+              "deletedAt": "2019-12-23T13:44:24.955Z"
+            }
 
 
 
