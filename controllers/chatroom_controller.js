@@ -168,10 +168,54 @@ async function createChatroom(req, res) {
   }
 }
 
+async function updateChatroom(req, res) {
+  console.log("function updateChatroom");
+  try {
+    const chatroom = await db.Chatroom.findByPk(req.params.id);
+    if (!chatroom)
+      return res.json({
+        errorMessage: "Chatroom by this id is not found"
+      });
+
+    if (chatroom.creatorId !== req.user.data.id)
+      return res.json({
+        errorMessage: "Only creator can update the chatroom"
+      });
+
+    if (chatroom.chat_type !== "group")
+      return res.json({
+        errorMessage: 'Chatoom type should be "group"'
+      });
+
+    //check name
+    //do not let the chatroom to be updated with a name which already exists
+    const findChatroomByName = await db.Chatroom.findOne({
+      where: { name: req.body.name }
+    });
+
+    if (req.body.name) {
+      if (chatroom.name !== req.body.name && findChatroomByName) {
+        return res.json("Chatroom with this name already exists");
+      }
+      chatroom.name = req.body.name;
+    } else {
+      return res.json({
+        errorMessage: "Name is required"
+      });
+    }
+
+    await chatroom.save();
+    res.json({ chatroom });
+  } catch (err) {
+    console.error(err);
+    res.json({ errorMessage: err.message });
+  }
+}
+
 module.exports = {
   getChatrooms: getChatrooms,
   getChatroomById: getChatroomById,
-  createChatroom: createChatroom
-  // updateChatroom: updateChatroom,
+  createChatroom: createChatroom,
+  updateChatroom: updateChatroom
   // deleteChatroom: deleteChatroom
 };

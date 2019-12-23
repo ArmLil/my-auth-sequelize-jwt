@@ -111,7 +111,7 @@ async function updateArticle(req, res) {
       throw new Error("validationError: Article by this id is not found!");
 
     //check title
-    //do not let article to update his title with an title which already exists
+    //do not let the article to be updated with a title which already exists
     const findArticleByTitle = await db.Article.findOne({
       where: { title: req.body.title }
     });

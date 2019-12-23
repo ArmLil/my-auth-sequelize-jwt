@@ -253,6 +253,35 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
                 ]
             }
 
+            4) method - put
+              endpoint - /chatrooms/:id
+              this updates a  chat with a name
+
+               id - is a chatroom id
+               chatroom type should be group
+
+               example request body
+
+               {
+                         "name": "classroom 50",
+                         "chat_type": "group"
+                     }
+
+              	 expected response body
+
+              	 {
+                  "chatroom": {
+                      "id": "3edfbc7c-c939-4e9d-8bb3-a20eaaebaacb",
+                      "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                      "name": "classroom 50",
+                      "chat_type": "group",
+                      "createdAt": "2019-12-20T13:48:29.975Z",
+                      "updatedAt": "2019-12-23T07:47:33.017Z",
+                      "deletedAt": null
+                  }
+              }
+
+
     3. Users (include headers described in the beginning)
 
      	1)  method - get

@@ -23,7 +23,7 @@ module.exports = app => {
   router.get("/chatrooms", auth.checkauth, chatrooms.getChatrooms);
   router.get("/chatroomById/:id", auth.checkauth, chatrooms.getChatroomById);
   router.post("/chatrooms", auth.checkauth, chatrooms.createChatroom);
-  // router.put("/chatrooms/:id", auth.checkauth, chatrooms.updateChatroom);
+  router.put("/chatrooms/:id", auth.checkauth, chatrooms.updateChatroom);
   // router.delete("/chatrooms/:id", auth.checkauth, chatrooms.deleteChatroom);
 
   router.get("/users", auth.checkauth, users.getUsers);
