@@ -143,14 +143,6 @@ async function createChatroom(req, res) {
           chatroomName: chatroom[0].dataValues.name
         }
       });
-      await db.MembersChatrooms.findOrCreate({
-        where: {
-          memberId: findReceiver.id,
-          chatroomId: chatroom[0].dataValues.id,
-          memberName: findReceiver.username,
-          chatroomName: chatroom[0].dataValues.name
-        }
-      });
     } else
       return res.json({
         errorMessage:
@@ -214,9 +206,9 @@ async function updateChatroom(req, res) {
 
 async function deleteChatroom(req, res) {
   console.log("function deleteChatroom");
+
   try {
     const chatroom = await db.Chatroom.findByPk(req.params.id);
-    console.log({ chatroom });
     if (!chatroom) {
       return res.json({ errorMessage: "Chatroom by this id is not found!" });
     }
@@ -228,12 +220,79 @@ async function deleteChatroom(req, res) {
 
     if (chatroom.chat_type !== "group")
       return res.json({
-        errorMessage: 'Chatoom type should be "group" or "pairs"'
+        errorMessage: 'Chatroom type should be "group" or "pairs"'
       });
+
+    const members_chatrooms = await db.MembersChatrooms.findAndCountAll({
+      where: {
+        chatroomId: chatroom.id
+      }
+    });
+
+    let members_chatrooms_ids = [];
+
+    members_chatrooms.rows.forEach(mem_chat => {
+      members_chatrooms_ids.push(mem_chat.id);
+    });
+
+    db.MembersChatrooms.destroy({ where: { id: members_chatrooms_ids } });
+
     await chatroom.destroy();
+
     res.json({
       massage: `chatroom ${chatroom.name}, ${chatroom.id} is deleted`
     });
+  } catch (error) {
+    console.error(error);
+    res.json({ errorMessage: error.message });
+  }
+}
+
+async function addMemberToGroup(req, res) {
+  console.log("function memberToGroup");
+  try {
+    if (!req.body.chatroomId)
+      return res.json({ errorMessage: " chatroomId is required" });
+    if (!req.body.memberId)
+      return res.json({ errorMessage: " memberId is required" });
+    const { chatroomId, memberId } = req.body;
+
+    const chatroom = await db.Chatroom.findByPk(chatroomId);
+    if (!chatroom) {
+      return res.json({
+        errorMessage: `Chatroom by id = ${chatroomId} is not found`
+      });
+    }
+
+    const member = await db.User.findByPk(memberId);
+    if (!member) {
+      return res.json({
+        errorMessage: `Member by id = ${memberId} is not found`
+      });
+    }
+
+    if (chatroom.creatorId !== req.user.data.id)
+      return res.json({
+        errorMessage: "Only creator can add a member to the chatroom"
+      });
+
+    if (chatroom.chat_type !== "group")
+      return res.json({
+        errorMessage: 'Chatroom type should be "group"'
+      });
+
+    const membersChatroom = await db.MembersChatrooms.findOrCreate({
+      where: {
+        memberId: memberId,
+        chatroomId: chatroomId,
+        memberName: member.username,
+        chatroomName: chatroom.name
+      }
+    });
+
+    console.log({ membersChatroom });
+
+    res.json(membersChatroom);
   } catch (error) {
     console.error(error);
     res.json({ errorMessage: error.message });
@@ -245,5 +304,6 @@ module.exports = {
   getChatroomById: getChatroomById,
   createChatroom: createChatroom,
   updateChatroom: updateChatroom,
-  deleteChatroom: deleteChatroom
+  deleteChatroom: deleteChatroom,
+  addMemberToGroup: addMemberToGroup
 };

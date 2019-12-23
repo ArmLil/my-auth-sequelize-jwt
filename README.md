@@ -281,18 +281,49 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
                     }
                 }
 
-                5) method - delete
-                   endpoint - /chatrooms/:id
+            5) method - delete
+               endpoint - /chatrooms/:id
 
-                    this deletes a  chatroom
-                    id - is a chatroom id
-                    chatroom type should be group or pairs
+                this deletes a  chatroom
+                id - is a chatroom id
+                chatroom type should be group or pairs
 
-                    expected response body
+                expected response body
 
-                    {
-                      "massage": "chatroom classroom 50, 3edfbc7c-c939-4e9d-8bb3-a20eaaebaacb is deleted"
-                    }
+                {
+                  "massage": "chatroom classroom 50, 3edfbc7c-c939-4e9d-8bb3-a20eaaebaacb is deleted"
+                }
+
+            6) method - post
+               endpoint - /memberToGroup
+
+               this adds a new member to  chatroom
+               chatroom type should be group
+
+               example request body
+
+               {
+
+                 "memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
+                 "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8"
+               }
+
+            	expected response body
+
+            	[
+                {
+                    "id": "8506acea-5076-41d1-8af4-177a753da155",
+                    "memberId": "22f621b5-555c-490f-83ff-e54dde87f191",
+                    "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8",
+                    "memberName": "user10",
+                    "chatroomName": "classroom 2",
+                    "updatedAt": "2019-12-23T13:18:04.063Z",
+                    "createdAt": "2019-12-23T13:18:04.063Z",
+                    "deletedAt": null
+                },
+                true
+              ]
+
 
 
 
