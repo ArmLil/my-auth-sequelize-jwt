@@ -413,3 +413,198 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
                 ]
             }
         }
+
+
+  3. chatMessages (include headers described in the beginning)
+
+    	1)  method - get
+         endpoint - /chatMessages
+         returns the list of all chatMessages
+
+         expected response example
+
+         {
+        "chatMessages": {
+            "count": 4,
+            "rows": [
+                {
+                    "id": "3c997377-9d60-411f-a3a8-875aac92e3a6",
+                    "message": "Hi there!!!!",
+                    "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                    "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8",
+                    "createdAt": "2019-12-24T08:03:59.533Z",
+                    "updatedAt": "2019-12-24T08:03:59.533Z",
+                    "deletedAt": null
+                },
+                {
+                    "id": "c18d753d-8d0a-459a-aa0f-5df88742c2b0",
+                    "message": "Hello!!!!",
+                    "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                    "chatroomId": "6b03f30f-6028-49be-ab2d-1aed013395e8",
+                    "createdAt": "2019-12-24T08:05:00.639Z",
+                    "updatedAt": "2019-12-24T08:05:00.639Z",
+                    "deletedAt": null
+                },
+                {
+                    "id": "5fdc6a4d-4727-4d8b-9e53-58c9f90203e4",
+                    "message": "Wow!!!!",
+                    "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                    "chatroomId": "0c9d3fb1-652c-4dc5-a49f-5d7f991f3bda",
+                    "createdAt": "2019-12-24T08:35:01.391Z",
+                    "updatedAt": "2019-12-24T08:35:01.391Z",
+                    "deletedAt": null
+                },
+                {
+                    "id": "6b7af9d8-4696-473f-91dc-ba845604b2ed",
+                    "message": "What's up!!!!",
+                    "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                    "chatroomId": "0c9d3fb1-652c-4dc5-a49f-5d7f991f3bda",
+                    "createdAt": "2019-12-24T08:35:12.420Z",
+                    "updatedAt": "2019-12-24T08:35:12.420Z",
+                    "deletedAt": null
+                }
+              ]
+        	}
+        }
+
+      2)  method - get
+          endpoint - /chatMessages/:chatroomId
+           returns the list of chatMessages by chatroomId
+
+        	 expected response example
+
+        	{
+            "chatMessages": {
+                "count": 2,
+                "rows": [
+                    {
+                        "id": "5fdc6a4d-4727-4d8b-9e53-58c9f90203e4",
+                        "message": "Wow!!!!",
+                        "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                        "chatroomId": "0c9d3fb1-652c-4dc5-a49f-5d7f991f3bda",
+                        "createdAt": "2019-12-24T08:35:01.391Z",
+                        "updatedAt": "2019-12-24T08:35:01.391Z",
+                        "deletedAt": null
+                    },
+                    {
+                        "id": "6b7af9d8-4696-473f-91dc-ba845604b2ed",
+                        "message": "What's up!!!!",
+                        "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                        "chatroomId": "0c9d3fb1-652c-4dc5-a49f-5d7f991f3bda",
+                        "createdAt": "2019-12-24T08:35:12.420Z",
+                        "updatedAt": "2019-12-24T08:35:12.420Z",
+                        "deletedAt": null
+                    }
+                  ]
+                }
+            }
+
+       3)  method - get
+           endpoint - /chatMessageById/:id
+           returns the list of chatMessage by it’s id
+
+        	 expected response example
+
+        	 {
+            "chatMessage": {
+                "id": "5fdc6a4d-4727-4d8b-9e53-58c9f90203e4",
+                "message": "Wow!!!!",
+                "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                "chatroomId": "0c9d3fb1-652c-4dc5-a49f-5d7f991f3bda",
+                "createdAt": "2019-12-24T08:35:01.391Z",
+                "updatedAt": "2019-12-24T08:35:01.391Z",
+                "deletedAt": null,
+                "creator": {
+                    "id": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                    "username": "username3",
+                    "email": "armlilhov@mail.ru",
+                    "email_confirmed": true,
+                    "createdAt": "2019-12-19T14:18:09.015Z",
+                    "updatedAt": "2019-12-19T14:22:39.037Z"
+                },
+                "chatroom": {
+                    "id": "0c9d3fb1-652c-4dc5-a49f-5d7f991f3bda",
+                    "creatorId": "0b776e22-b605-4df0-9fce-82eb0cee5c8a",
+                    "name": "common",
+                    "chat_type": "general",
+                    "createdAt": "2019-12-19T14:18:09.015Z",
+                    "updatedAt": "2019-12-19T14:18:09.015Z",
+                    "deletedAt": null
+                }
+             }
+          }
+
+
+       4)  method - post
+           endpoint - /chatMessages
+           this creates a new chatMessage
+
+    	      example request body
+
+        	 {
+             "message": "Test !!!!",
+             "chatroomId": "9c9d3fb1-652c-4dc5-a49f-5d7f991f3bdb"
+           }
+
+            example response body
+
+            {
+                "chatMessage": [
+                    {
+                        "id": "81c902ae-41de-405f-85c3-0efc335ac0cc",
+                        "message": "Test !!!!",
+                        "chatroomId": "9c9d3fb1-652c-4dc5-a49f-5d7f991f3bdb",
+                        "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                        "updatedAt": "2019-12-24T10:39:11.761Z",
+                        "createdAt": "2019-12-24T10:39:11.761Z",
+                        "deletedAt": null
+                    },
+                    true
+                ]
+            }
+
+
+
+        5)  method - put
+            endpoint - /chatMessages/:id
+            this updattes a new chatMessage
+
+          	example request body
+
+          	{
+                 "message": "Test update!!!!",
+                 "chatroomId": "9c9d3fb1-652c-4dc5-a49f-5d7f991f3bdb"
+            }
+
+            example response body
+
+            {
+                "chatMessage": {
+                    "id": "81c902ae-41de-405f-85c3-0efc335ac0cc",
+                    "message": "Test update!!!!",
+                    "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                    "chatroomId": "9c9d3fb1-652c-4dc5-a49f-5d7f991f3bdb",
+                    "createdAt": "2019-12-24T10:39:11.761Z",
+                    "updatedAt": "2019-12-24T10:43:48.854Z",
+                    "deletedAt": null
+                }
+            }
+
+        6)  method - delete
+            endpoint - /chatMessages/:id
+            this deletes a chatMessage
+
+            example response body
+
+            {
+                "chatMessage": {
+                    "id": "81c902ae-41de-405f-85c3-0efc335ac0cc",
+                    "message": "Test update!!!!",
+                    "creatorId": "6b776e22-b605-4df0-9fce-82eb0cee5c8e",
+                    "chatroomId": "9c9d3fb1-652c-4dc5-a49f-5d7f991f3bdb",
+                    "createdAt": "2019-12-24T10:39:11.761Z",
+                    "updatedAt": "2019-12-24T10:47:41.834Z",
+                    "deletedAt": "2019-12-24T10:47:41.832Z"
+                },
+                "massage": "chatMessage \"Test update!!!!\", 81c902ae-41de-405f-85c3-0efc335ac0cc is deleted"
+            }

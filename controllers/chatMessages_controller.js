@@ -184,7 +184,7 @@ async function deleteChatMessage(req, res) {
 
     res.json({
       chatMessage,
-      massage: `chatMessage ${chatMessage.name}, ${chatMessage.id} is deleted`
+      massage: `chatMessage "${chatMessage.message}", ${chatMessage.id} is deleted`
     });
   } catch (error) {
     console.error(error);
