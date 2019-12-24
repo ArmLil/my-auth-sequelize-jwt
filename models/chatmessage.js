@@ -22,9 +22,14 @@ module.exports = (sequelize, DataTypes) => {
   );
   ChatMessage.associate = function(models) {
     ChatMessage.belongsTo(models.User, {
-      as: "user",
+      as: "creator",
       targetKey: "id",
       foreignKey: "creatorId"
+    });
+    ChatMessage.belongsTo(models.Chatroom, {
+      as: "chatroom",
+      targetKey: "id",
+      foreignKey: "chatroomId"
     });
   };
   return ChatMessage;

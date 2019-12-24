@@ -31,7 +31,7 @@ module.exports = app => {
 
   router.get("/chatMessages", auth.checkauth, chatMessages.getChatMessages);
   router.get("/chatMessages/:chatroomId", auth.checkauth, chatMessages.getChatMessagesByChatroomId);
-  // router.get("/chatroomById/:id", auth.checkauth, chatMessages.getChatMessageById);
+  router.get("/chatMessageById/:id", auth.checkauth, chatMessages.getChatMessageById);
   router.post("/chatMessages", auth.checkauth, chatMessages.createChatMessage);
   // router.put("/chatMessages/:id", auth.checkauth, chatMessages.updateChatMessage);
   // router.delete("/chatMessages/:id", auth.checkauth, chatMessages.deleteChatMessage);

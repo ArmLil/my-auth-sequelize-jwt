@@ -39,36 +39,35 @@ async function getChatMessagesByChatroomId(req, res) {
   }
 }
 
-// async function getChatMessageById(req, res) {
-//   console.log("function getChatMessageById");
-//   try {
-//     let chatMessage = await db.ChatMessage.findByPk(req.params.id, {
-//       include: [
-//         {
-//           model: db.User,
-//           as: "creator",
-//           attributes: { exclude: ["password", "deletedAt"] }
-//         },
-//         {
-//           model: db.User,
-//           as: "members",
-//           attributes: { exclude: ["password", "deletedAt"] }
-//         }
-//       ]
-//     });
-//
-//     if (!chatMessage) {
-//       throw new Error("ChatMessage with this id is not found");
-//     }
-//
-//     res.json({ chatMessage });
-//   } catch (error) {
-//     console.error(error);
-//     res.json({
-//       errorMessage: error.message
-//     });
-//   }
-// }
+async function getChatMessageById(req, res) {
+  console.log("function getChatMessageById");
+  try {
+    let chatMessage = await db.ChatMessage.findByPk(req.params.id, {
+      include: [
+        {
+          model: db.User,
+          as: "creator",
+          attributes: { exclude: ["password", "deletedAt"] }
+        },
+        {
+          model: db.Chatroom,
+          as: "chatroom"
+        }
+      ]
+    });
+
+    if (!chatMessage) {
+      throw new Error("ChatMessage with this id is not found");
+    }
+
+    res.json({ chatMessage });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      errorMessage: error.message
+    });
+  }
+}
 
 async function createChatMessage(req, res) {
   console.log("function createChatMessage");
@@ -229,8 +228,8 @@ async function createChatMessage(req, res) {
 module.exports = {
   getChatMessages,
   getChatMessagesByChatroomId,
-  // getChatMessageById: getChatMessageById,
+  getChatMessageById,
   createChatMessage
-  // updateChatMessage: updateChatMessage,
-  // deleteChatMessage: deleteChatMessage
+  // updateChatMessage,
+  // deleteChatMessage
 };
