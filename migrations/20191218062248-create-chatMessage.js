@@ -4,14 +4,14 @@ module.exports = {
     return queryInterface.createTable("chatMessages", {
       id: {
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: false,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       message: {
         type: Sequelize.TEXT
       },
-      userId: {
+      creatorId: {
         type: Sequelize.UUID,
         references: {
           model: "users", // name of Target model
@@ -20,7 +20,7 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL"
       },
-      chatId: {
+      chatroomId: {
         type: Sequelize.UUID,
         references: {
           model: "chatrooms", // name of Target model

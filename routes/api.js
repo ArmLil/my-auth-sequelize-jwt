@@ -5,6 +5,7 @@ module.exports = app => {
   const router = require("express").Router();
   const articles = require("../controllers/article_controller");
   const chatrooms = require("../controllers/chatroom_controller");
+  const chatMessages = require("../controllers/chatMessages_controller");
   const users = require("../controllers/user_controller");
   const auth = require("../controllers/auth_controller");
 
@@ -27,6 +28,13 @@ module.exports = app => {
   router.delete("/chatrooms/:id", auth.checkauth, chatrooms.deleteChatroom);
   router.post("/memberToGroup", auth.checkauth, chatrooms.addMemberToGroup);
   router.delete("/memberInGroup", auth.checkauth, chatrooms.deleteMemberInGroup);
+
+  router.get("/chatMessages", auth.checkauth, chatMessages.getChatMessages);
+  router.get("/chatMessages/:chatroomId", auth.checkauth, chatMessages.getChatMessagesByChatroomId);
+  // router.get("/chatroomById/:id", auth.checkauth, chatMessages.getChatMessageById);
+  router.post("/chatMessages", auth.checkauth, chatMessages.createChatMessage);
+  // router.put("/chatMessages/:id", auth.checkauth, chatMessages.updateChatMessage);
+  // router.delete("/chatMessages/:id", auth.checkauth, chatMessages.deleteChatMessage);
 
   router.get("/users", auth.checkauth, users.getUsers);
   router.get("/userById/:id", auth.checkauth, users.getUserById);

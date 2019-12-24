@@ -59,11 +59,11 @@ async function createChatroom(req, res) {
     let creator;
     let creatorId;
 
-    console.log("req.user = ", req.user);
-
     if (req.user) {
       creator = req.user.data;
       creatorId = creator.id;
+    } else {
+      return res.json({errorMessage: 'req.user is required'})
     }
 
     if (req.body.chat_type) {
@@ -351,11 +351,11 @@ async function deleteMemberInGroup(req, res) {
 }
 
 module.exports = {
-  getChatrooms: getChatrooms,
-  getChatroomById: getChatroomById,
-  createChatroom: createChatroom,
-  updateChatroom: updateChatroom,
-  deleteChatroom: deleteChatroom,
-  addMemberToGroup: addMemberToGroup,
-  deleteMemberInGroup: deleteMemberInGroup
+  getChatrooms,
+  getChatroomById,
+  createChatroom,
+  updateChatroom,
+  deleteChatroom,
+  addMemberToGroup,
+  deleteMemberInGroup
 };

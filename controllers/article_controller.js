@@ -150,9 +150,9 @@ async function deleteArticle(req, res) {
 }
 
 module.exports = {
-  getArticles: getArticles,
-  getArticleById: getArticleById,
-  createArticle: createArticle,
-  updateArticle: updateArticle,
-  deleteArticle: deleteArticle
+  getArticles,
+  getArticleById,
+  createArticle,
+  updateArticle,
+  deleteArticle
 };

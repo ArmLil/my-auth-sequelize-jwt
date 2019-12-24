@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4
       },
       message: DataTypes.TEXT,
-      user_id: DataTypes.UUID,
-      chat_id: DataTypes.UUID
+      creatorId: DataTypes.UUID,
+      chatroomId: DataTypes.UUID
     },
     {
       timestamps: true,
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     ChatMessage.belongsTo(models.User, {
       as: "user",
       targetKey: "id",
-      foreignKey: "user_id"
+      foreignKey: "creatorId"
     });
   };
   return ChatMessage;

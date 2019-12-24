@@ -264,9 +264,9 @@ function showHome(req, res) {
 }
 
 module.exports = {
-  register: register,
-  login: login,
-  checkauth: checkauth,
-  emailConfirmation: emailConfirmation,
-  showHome: showHome
+  register,
+  login,
+  checkauth,
+  emailConfirmation,
+  showHome
 };

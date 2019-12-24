@@ -151,9 +151,9 @@ async function getUserById(req, res) {
 // }
 
 module.exports = {
-  getUsers: getUsers,
-  getUserById: getUserById
-  // createUser: createUser,
-  // updateUser: updateUser,
-  // deleteUser: deleteUser
+  getUsers,
+  getUserById
+  // createUser,
+  // updateUser,
+  // deleteUser
 };
