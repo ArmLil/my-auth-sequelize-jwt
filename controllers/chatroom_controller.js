@@ -20,6 +20,7 @@ async function getChatrooms(req, res) {
 async function getChatroomById(req, res) {
   console.log("function getChatroomById");
   try {
+    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
     let chatroom = await db.Chatroom.findByPk(req.params.id, {
       include: [
         {
@@ -68,11 +69,13 @@ async function createChatroom(req, res) {
 
     if (req.body.chat_type) {
       chat_type = req.body.chat_type;
+    } else {
+      return res.json({errorMessage: "chat_type is required in body"})
     }
 
     if (chat_type == "group") {
       if (!req.body.name) {
-        return res.json({ errorMessage: "name is required" });
+        return res.json({ errorMessage: "name is required in body" });
       }
       name = req.body.name;
 
@@ -163,6 +166,8 @@ async function createChatroom(req, res) {
 async function updateChatroom(req, res) {
   console.log("function updateChatroom");
   try {
+    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
+
     const chatroom = await db.Chatroom.findByPk(req.params.id);
     if (!chatroom)
       return res.json({
@@ -176,7 +181,7 @@ async function updateChatroom(req, res) {
 
     if (chatroom.chat_type !== "group")
       return res.json({
-        errorMessage: 'Chatoom type should be "group"'
+        errorMessage: 'Chatroom type should be "group"'
       });
 
     //check name
@@ -208,6 +213,7 @@ async function deleteChatroom(req, res) {
   console.log("function deleteChatroom");
 
   try {
+    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
     const chatroom = await db.Chatroom.findByPk(req.params.id);
     if (!chatroom) {
       return res.json({ errorMessage: "Chatroom by this id is not found!" });
@@ -252,9 +258,9 @@ async function addMemberToGroup(req, res) {
   console.log("function memberToGroup");
   try {
     if (!req.body.chatroomId)
-      return res.json({ errorMessage: " chatroomId is required" });
+      return res.json({ errorMessage: " chatroomId is required in body" });
     if (!req.body.memberId)
-      return res.json({ errorMessage: " memberId is required" });
+      return res.json({ errorMessage: " memberId is required in body" });
     const { chatroomId, memberId } = req.body;
 
     const chatroom = await db.Chatroom.findByPk(chatroomId);
@@ -290,8 +296,6 @@ async function addMemberToGroup(req, res) {
       }
     });
 
-    console.log({ membersChatroom });
-
     res.json(membersChatroom);
   } catch (error) {
     console.error(error);
@@ -303,9 +307,9 @@ async function deleteMemberInGroup(req, res) {
   console.log("function deleteMemberInGroup");
   try {
     if (!req.body.chatroomId)
-      return res.json({ errorMessage: " chatroomId is required" });
+      return res.json({ errorMessage: " chatroomId is required in body" });
     if (!req.body.memberId)
-      return res.json({ errorMessage: " memberId is required" });
+      return res.json({ errorMessage: " memberId is required in body" });
     const { chatroomId, memberId } = req.body;
 
     const chatroom = await db.Chatroom.findByPk(chatroomId);

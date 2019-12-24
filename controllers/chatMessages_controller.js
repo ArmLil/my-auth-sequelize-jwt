@@ -42,6 +42,8 @@ async function getChatMessagesByChatroomId(req, res) {
 async function getChatMessageById(req, res) {
   console.log("function getChatMessageById");
   try {
+
+    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
     let chatMessage = await db.ChatMessage.findByPk(req.params.id, {
       include: [
         {
@@ -88,16 +90,16 @@ async function createChatMessage(req, res) {
     if (req.body.chatroomId) {
       chatroomId = req.body.chatroomId;
     } else {
-      return res.json({errorMessage: 'chatroomId is required'})
+      return res.json({errorMessage: 'chatroomId is required in body'})
     }
 
     if (req.body.message) {
       message = req.body.message;
     } else {
-      return res.json({errorMessage: 'message is required'})
+      return res.json({errorMessage: 'message is required in body'})
     }
 
-    //check if creator is chatroom member
+    //check if creator is a chatroom member
     const memberChatroom = await db.MembersChatrooms.findOne({
       where: {
         memberId: creatorId,
@@ -105,13 +107,9 @@ async function createChatMessage(req, res) {
       }
     })
 
-    console.log({memberChatroom});
-
-
     if (!memberChatroom) {
       return res.json({errorMessage: " Only member can add a chatMessage"})
     }
-
 
     const chatroom = await db.Chatroom.findByPk(chatroomId)
     if (!chatroom) {
@@ -135,49 +133,36 @@ async function createChatMessage(req, res) {
   }
 }
 
-// async function updateChatMessage(req, res) {
-//   console.log("function updateChatMessage");
-//   try {
-//     const chatMessage = await db.ChatMessage.findByPk(req.params.id);
-//     if (!chatMessage)
-//       return res.json({
-//         errorMessage: "ChatMessage by this id is not found"
-//       });
-//
-//     if (chatMessage.creatorId !== req.user.data.id)
-//       return res.json({
-//         errorMessage: "Only creator can update the chatMessage"
-//       });
-//
-//     if (chatMessage.chat_type !== "group")
-//       return res.json({
-//         errorMessage: 'Chatoom type should be "group"'
-//       });
-//
-//     //check name
-//     //do not let the chatMessage to be updated with a name which already exists
-//     const findChatMessageByName = await db.ChatMessage.findOne({
-//       where: { name: req.body.name }
-//     });
-//
-//     if (req.body.name) {
-//       if (chatMessage.name !== req.body.name && findChatMessageByName) {
-//         return res.json("ChatMessage with this name already exists");
-//       }
-//       chatMessage.name = req.body.name;
-//     } else {
-//       return res.json({
-//         errorMessage: "Name is required"
-//       });
-//     }
-//
-//     await chatMessage.save();
-//     res.json({ chatMessage });
-//   } catch (err) {
-//     console.error(err);
-//     res.json({ errorMessage: err.message });
-//   }
-// }
+async function updateChatMessage(req, res) {
+  console.log("function updateChatMessage");
+  try {
+    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
+
+    const chatMessage = await db.ChatMessage.findByPk(req.params.id);
+
+    if (!chatMessage)
+      return res.json({
+        errorMessage: "ChatMessage by this id is not found"
+      });
+
+    if (chatMessage.creatorId !== req.user.data.id)
+      return res.json({
+        errorMessage: "Only creator can update the chatMessage"
+      });
+
+    if (req.body.message) {
+      chatMessage.message = req.body.message;
+    } else {
+      return res.json({errorMessage: 'message is required in body'})
+    }
+
+    await chatMessage.save();
+    res.json({ chatMessage });
+  } catch (err) {
+    console.error(err);
+    res.json({ errorMessage: err.message });
+  }
+}
 
 // async function deleteChatMessage(req, res) {
 //   console.log("function deleteChatMessage");
@@ -229,7 +214,7 @@ module.exports = {
   getChatMessages,
   getChatMessagesByChatroomId,
   getChatMessageById,
-  createChatMessage
-  // updateChatMessage,
+  createChatMessage,
+  updateChatMessage
   // deleteChatMessage
 };
