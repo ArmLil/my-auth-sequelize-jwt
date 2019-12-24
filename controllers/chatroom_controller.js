@@ -246,6 +246,7 @@ async function deleteChatroom(req, res) {
     await chatroom.destroy();
 
     res.json({
+      chatroom,
       massage: `chatroom ${chatroom.name}, ${chatroom.id} is deleted`
     });
   } catch (error) {
@@ -347,7 +348,7 @@ async function deleteMemberInGroup(req, res) {
 
     const deletedMember = await membersChatroom.destroy();
 
-    res.json(deletedMember);
+    return res.json(deletedMember);
   } catch (error) {
     console.error(error);
     res.json({ errorMessage: error.message });

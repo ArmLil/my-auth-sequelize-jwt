@@ -164,49 +164,33 @@ async function updateChatMessage(req, res) {
   }
 }
 
-// async function deleteChatMessage(req, res) {
-//   console.log("function deleteChatMessage");
-//
-//   try {
-//     const chatMessage = await db.ChatMessage.findByPk(req.params.id);
-//     if (!chatMessage) {
-//       return res.json({ errorMessage: "ChatMessage by this id is not found!" });
-//     }
-//
-//     if (chatMessage.creatorId !== req.user.data.id)
-//       return res.json({
-//         errorMessage: "Only creator can delete the chatMessage"
-//       });
-//
-//     if (chatMessage.chat_type !== "group")
-//       return res.json({
-//         errorMessage: 'ChatMessage type should be "group" or "pairs"'
-//       });
-//
-//     const members_chatMessages = await db.MembersChatMessages.findAndCountAll({
-//       where: {
-//         chatMessageId: chatMessage.id
-//       }
-//     });
-//
-//     let members_chatMessages_ids = [];
-//
-//     members_chatMessages.rows.forEach(mem_chat => {
-//       members_chatMessages_ids.push(mem_chat.id);
-//     });
-//
-//     db.MembersChatMessages.destroy({ where: { id: members_chatMessages_ids } });
-//
-//     await chatMessage.destroy();
-//
-//     res.json({
-//       massage: `chatMessage ${chatMessage.name}, ${chatMessage.id} is deleted`
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.json({ errorMessage: error.message });
-//   }
-// }
+async function deleteChatMessage(req, res) {
+  console.log("function deleteChatMessage");
+
+  try {
+    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
+
+    const chatMessage = await db.ChatMessage.findByPk(req.params.id);
+    if (!chatMessage) {
+      return res.json({ errorMessage: "ChatMessage by this id is not found!" });
+    }
+
+    if (chatMessage.creatorId !== req.user.data.id)
+      return res.json({
+        errorMessage: "Only creator can delete the chatMessage"
+      });
+
+    await chatMessage.destroy();
+
+    res.json({
+      chatMessage,
+      massage: `chatMessage ${chatMessage.name}, ${chatMessage.id} is deleted`
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({ errorMessage: error.message });
+  }
+}
 
 
 
@@ -215,6 +199,6 @@ module.exports = {
   getChatMessagesByChatroomId,
   getChatMessageById,
   createChatMessage,
-  updateChatMessage
-  // deleteChatMessage
+  updateChatMessage,
+  deleteChatMessage
 };
