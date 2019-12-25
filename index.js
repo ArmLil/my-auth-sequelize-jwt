@@ -61,6 +61,11 @@ app.use(function(req, res, next) {
 
 const port = process.env.PORT || 3000;
 
+// server.listen(port, '172.28.2.35', function() {
+//   console.log(`server listening on port ${port}`);
+//   // db.sequelize.sync();
+// });
+
 server.listen(port, function() {
   console.log(`server listening on port ${port}`);
   // db.sequelize.sync();

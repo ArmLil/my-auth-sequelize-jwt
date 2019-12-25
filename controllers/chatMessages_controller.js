@@ -166,7 +166,6 @@ async function updateChatMessage(req, res) {
 
 async function deleteChatMessage(req, res) {
   console.log("function deleteChatMessage");
-
   try {
     if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
 

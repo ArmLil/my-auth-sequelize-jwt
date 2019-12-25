@@ -10,12 +10,6 @@ async function getUsers(req, res) {
   try {
     let users = await db.User.findAndCountAll({
       attributes: { exclude: ["password"] }
-      // include: [
-      //   {
-      //     model: db.Article,
-      //     as: "articles"
-      //   }
-      // ]
     });
 
     res.json({
@@ -37,8 +31,8 @@ async function getUserById(req, res) {
       attributes: { exclude: ["password"] },
       include: [
         {
-          model: db.Article,
-          as: "articles"
+          model: db.Chatroom,
+          as: "chatrooms"
         }
       ]
     });
