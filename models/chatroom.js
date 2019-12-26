@@ -36,12 +36,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "chatroomId",
       otherKey: "memberId"
     });
-    // Chatroom.hasMany(models.User, {
-    //   through: "MembersChatrooms",
-    //   as: "members",
-    //   foreignKey: "chatroomId",
-    //   otherKey: "memberId"
-    // });
+    Chatroom.belongsToMany(models.User, {
+      through: "User_chatroom_numberOfUnreadMessages",
+      as: "users_with_unread_messages",
+      foreignKey: "chatroomId",
+      otherKey: "memberId"
+    });
     Chatroom.belongsTo(models.User, {
       as: "creator",
       targetKey: "id",
