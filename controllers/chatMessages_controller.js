@@ -99,23 +99,6 @@ async function createChatMessage(req, res) {
       return res.json({ errorMessage: "message is required in body" });
     }
 
-    //check if creator is a chatroom member
-    // const memberChatroom = await db.MembersChatrooms.findOne({
-    //   where: {
-    //     memberId: creatorId,
-    //     chatroomId: chatroomId
-    //   }
-    // })
-    //
-    // if (!memberChatroom) {
-    //   return res.json({errorMessage: " Only member can add a chatMessage"})
-    // }
-    //
-    // const chatroom = await db.Chatroom.findByPk(chatroomId)
-    // if (!chatroom) {
-    //   return res.json({ errorMessage: `chatroom by id ${chatroomId} is not found` });
-    // }
-
     const chatroom = await db.Chatroom.findByPk(chatroomId, {
       include: [
         {
@@ -159,36 +142,20 @@ async function createChatMessage(req, res) {
           db.User_chatroom_numberOfUnreadMessages.findOrCreate({
             where: {
               memberId: member.id,
-              chatroomId,
-              memberName: member.username,
-              chatroomName: chatroom.name
+              chatroomId
             }
-          })
-            .then(() => {
-              db.User_chatroom_numberOfUnreadMessages.update(
-                { lastChatMessageId: chatMessage.id },
-                {
-                  where: {
-                    memberId: member.id,
-                    chatroomId,
-                    memberName: member.username,
-                    chatroomName: chatroom.name
-                  }
+          }).then(() => {
+            db.User_chatroom_numberOfUnreadMessages.increment(
+              "numberOfUnreadMessages",
+              {
+                by: 1,
+                where: {
+                  memberId: member.id,
+                  chatroomId
                 }
-              );
-            })
-            .then(() => {
-              db.User_chatroom_numberOfUnreadMessages.increment(
-                "numberOfUnreadMessages",
-                {
-                  by: 1,
-                  where: {
-                    memberId: member.id,
-                    chatroomId
-                  }
-                }
-              );
-            });
+              }
+            );
+          });
         }
       }
     );

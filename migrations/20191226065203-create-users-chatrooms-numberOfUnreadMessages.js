@@ -16,17 +16,8 @@ module.exports = {
         chatroomId: {
           type: Sequelize.UUID
         },
-        memberName: {
-          type: Sequelize.STRING
-        },
-        chatroomName: {
-          type: Sequelize.STRING
-        },
         numberOfUnreadMessages: {
           type: Sequelize.INTEGER
-        },
-        lastChatMessageId: {
-          type: Sequelize.UUID
         },
         createdAt: {
           allowNull: false,

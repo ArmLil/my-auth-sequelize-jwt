@@ -11,11 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       memberId: DataTypes.UUID,
       chatroomId: DataTypes.UUID,
-      memberName: DataTypes.STRING,
-      chatroomName: DataTypes.STRING,
-      lastChatMessageId: {
-        type: DataTypes.UUID
-      },
       numberOfUnreadMessages: {
         type: DataTypes.INTEGER,
         defaultValue: 0

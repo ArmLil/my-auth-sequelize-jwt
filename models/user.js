@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId"
     });
     User.hasMany(models.Chatroom, {
-      as: "chatrooms",
+      as: "createdChatrooms",
       foreignKey: "creatorId"
     });
     User.belongsToMany(models.Chatroom, {
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     User.belongsToMany(models.Chatroom, {
       through: "MembersChatrooms",
-      as: "rooms",
+      as: "roomsWhereUserIsMember",
       foreignKey: "memberId",
       otherKey: "chatroomId"
     });

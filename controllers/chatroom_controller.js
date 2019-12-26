@@ -20,7 +20,8 @@ async function getChatrooms(req, res) {
 async function getChatroomById(req, res) {
   console.log("function getChatroomById");
   try {
-    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
+    if (!req.params.id)
+      return res.json({ errorMessage: "req.params.id is required" });
     let chatroom = await db.Chatroom.findByPk(req.params.id, {
       include: [
         {
@@ -33,6 +34,11 @@ async function getChatroomById(req, res) {
           as: "members",
           attributes: { exclude: ["password", "deletedAt"] }
         }
+        // {
+        //   model: db.User,
+        //   as: "users_with_unread_messages",
+        //   attributes: { exclude: ["password", "deletedAt"] }
+        // }
       ]
     });
 
@@ -64,13 +70,13 @@ async function createChatroom(req, res) {
       creator = req.user.data;
       creatorId = creator.id;
     } else {
-      return res.json({errorMessage: 'req.user is required'})
+      return res.json({ errorMessage: "req.user is required" });
     }
 
     if (req.body.chat_type) {
       chat_type = req.body.chat_type;
     } else {
-      return res.json({errorMessage: "chat_type is required in body"})
+      return res.json({ errorMessage: "chat_type is required in body" });
     }
 
     if (chat_type == "group") {
@@ -166,7 +172,8 @@ async function createChatroom(req, res) {
 async function updateChatroom(req, res) {
   console.log("function updateChatroom");
   try {
-    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
+    if (!req.params.id)
+      return res.json({ errorMessage: "req.params.id is required" });
 
     const chatroom = await db.Chatroom.findByPk(req.params.id);
     if (!chatroom)
@@ -213,7 +220,8 @@ async function deleteChatroom(req, res) {
   console.log("function deleteChatroom");
 
   try {
-    if (!req.params.id) return res.json({errorMessage: "req.params.id is required"})
+    if (!req.params.id)
+      return res.json({ errorMessage: "req.params.id is required" });
     const chatroom = await db.Chatroom.findByPk(req.params.id);
     if (!chatroom) {
       return res.json({ errorMessage: "Chatroom by this id is not found!" });

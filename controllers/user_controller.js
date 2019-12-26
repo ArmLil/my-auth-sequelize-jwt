@@ -32,8 +32,16 @@ async function getUserById(req, res) {
       include: [
         {
           model: db.Chatroom,
-          as: "chatrooms"
+          as: "createdChatrooms"
+        },
+        {
+          model: db.Chatroom,
+          as: "roomsWhereUserIsMember"
         }
+        // {
+        //   model: db.Chatroom,
+        //   as: "rooms_with_unread_messages"
+        // }
       ]
     });
 
