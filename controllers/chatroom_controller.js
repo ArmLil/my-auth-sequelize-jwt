@@ -22,7 +22,7 @@ async function getChatroomById(req, res) {
   try {
     if (!req.params.id)
       return res.json({ errorMessage: "req.params.id is required" });
-    let chatroom = await db.Chatroom.findByPk(req.params.id, {
+    const chatroom = await db.Chatroom.findByPk(req.params.id, {
       include: [
         {
           model: db.User,
@@ -45,6 +45,21 @@ async function getChatroomById(req, res) {
     if (!chatroom) {
       throw new Error("Chatroom with this id is not found");
     }
+
+    //update notifications for unread messages, make them is read,
+    // number of unread messages will be 0
+
+    const notesForUnreadMessages = await db.User_chatroom_numberOfUnreadMessages.findOne(
+      {
+        where: {
+          memberId: req.user.data.id,
+          chatroomId: chatroom.id
+        }
+      }
+    );
+
+    notesForUnreadMessages.numberOfUnreadMessages = 0;
+    await notesForUnreadMessages.save();
 
     res.json({ chatroom });
   } catch (error) {
