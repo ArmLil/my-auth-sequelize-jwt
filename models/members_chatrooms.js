@@ -10,13 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4
       },
       memberId: DataTypes.UUID,
-      chatroomId: DataTypes.UUID,
-      memberName: {
-        type: DataTypes.STRING
-      },
-      chatroomName: {
-        type: DataTypes.STRING
-      }
+      chatroomId: DataTypes.UUID
     },
     {
       timestamps: true,

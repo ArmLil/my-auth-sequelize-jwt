@@ -415,7 +415,7 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
           }
 
 
-      3. chatMessages (include headers described in the beginning)
+      4. chatMessages (include headers described in the beginning)
 
             1)  method - get
              endpoint - /chatMessages
@@ -608,3 +608,25 @@ https://medium.com/@tonyangelo9707/many-to-many-associations-using-sequelize-941
                     },
                     "massage": "chatMessage \"Test update!!!!\", 81c902ae-41de-405f-85c3-0efc335ac0cc is deleted"
                 }
+
+      5. Notifications
+
+        	1)  method - get
+             endpoint - /notifications/:id
+             this returns notification for the given group
+
+             example response body
+
+             {
+             "notificationsOfUnreadMessages": [
+                {
+                    "id": "5f893d6b-a2bc-45fc-930b-ad05910f05b6",
+                    "memberId": "b2f009fb-1ea7-4bd1-adca-58fc4a6ee064",
+                    "chatroomId": "1d9336f6-3e49-41b7-a609-b591f84383b0",
+                    "numberOfUnreadMessages": 2,
+                    "createdAt": "2019-12-27T10:59:00.944Z",
+                    "updatedAt": "2019-12-27T10:59:30.569Z",
+                    "deletedAt": null
+                }
+             ]
+          }

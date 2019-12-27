@@ -58,8 +58,10 @@ async function getChatroomById(req, res) {
       }
     );
 
-    notesForUnreadMessages.numberOfUnreadMessages = 0;
-    await notesForUnreadMessages.save();
+    if (notesForUnreadMessages) {
+      notesForUnreadMessages.numberOfUnreadMessages = 0;
+      await notesForUnreadMessages.save();
+    }
 
     res.json({ chatroom });
   } catch (error) {
@@ -124,9 +126,7 @@ async function createChatroom(req, res) {
       await db.MembersChatrooms.findOrCreate({
         where: {
           memberId: creatorId,
-          chatroomId: chatroom[0].dataValues.id,
-          memberName: creator.username,
-          chatroomName: chatroom[0].dataValues.name
+          chatroomId: chatroom[0].dataValues.id
         }
       });
     } else if (chat_type == "pairs") {
@@ -162,9 +162,7 @@ async function createChatroom(req, res) {
       await db.MembersChatrooms.findOrCreate({
         where: {
           memberId: creatorId,
-          chatroomId: chatroom[0].dataValues.id,
-          memberName: creator.username,
-          chatroomName: chatroom[0].dataValues.name
+          chatroomId: chatroom[0].dataValues.id
         }
       });
     } else
@@ -314,9 +312,7 @@ async function addMemberToGroup(req, res) {
     const membersChatroom = await db.MembersChatrooms.findOrCreate({
       where: {
         memberId: memberId,
-        chatroomId: chatroomId,
-        memberName: member.username,
-        chatroomName: chatroom.name
+        chatroomId: chatroomId
       }
     });
 
@@ -363,9 +359,7 @@ async function deleteMemberInGroup(req, res) {
     const membersChatroom = await db.MembersChatrooms.findOne({
       where: {
         memberId: memberId,
-        chatroomId: chatroomId,
-        memberName: member.username,
-        chatroomName: chatroom.name
+        chatroomId: chatroomId
       }
     });
 

@@ -16,12 +16,6 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false
       },
-      memberName: {
-        type: Sequelize.STRING
-      },
-      chatroomName: {
-        type: Sequelize.STRING
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
