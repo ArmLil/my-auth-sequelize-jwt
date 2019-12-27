@@ -126,7 +126,7 @@ async function createChatMessage(req, res) {
     });
 
     if (!creatorIsMember) {
-      return res.json({ errorMessage: " Only member can add a chatMessage" });
+      return res.json({ errorMessage: "Only member can add a chatMessage" });
     }
 
     const chatMessage = await db.ChatMessage.create({
@@ -135,30 +135,29 @@ async function createChatMessage(req, res) {
       creatorId
     });
 
-    const users_chatrooms_numberOfUnreadMessages = await chatroom.members.forEach(
-      member => {
-        if (creatorId !== member.id) {
-          console.log("creatorId=", creatorId, "member.id=", member.id);
-          db.User_chatroom_numberOfUnreadMessages.findOrCreate({
-            where: {
-              memberId: member.id,
-              chatroomId
-            }
-          }).then(() => {
-            db.User_chatroom_numberOfUnreadMessages.increment(
-              "numberOfUnreadMessages",
-              {
-                by: 1,
-                where: {
-                  memberId: member.id,
-                  chatroomId
-                }
+    // update number of unread messages adding by 1 for every
+    // user in chatroom except the message creator
+    await chatroom.members.forEach(member => {
+      if (creatorId !== member.id) {
+        db.User_chatroom_numberOfUnreadMessages.findOrCreate({
+          where: {
+            memberId: member.id,
+            chatroomId
+          }
+        }).then(() => {
+          db.User_chatroom_numberOfUnreadMessages.increment(
+            "numberOfUnreadMessages",
+            {
+              by: 1,
+              where: {
+                memberId: member.id,
+                chatroomId
               }
-            );
-          });
-        }
+            }
+          );
+        });
       }
-    );
+    });
 
     res.json({ chatMessage });
   } catch (error) {
