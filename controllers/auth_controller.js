@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const emailSender = require("./email_notification_controller");
 const saltRounds = 10;
+// 60 * 60 * 24 = 1 day
+const expireTime = 60 * 60 * 24 * 5;
 
 function checkauth(req, res, next) {
   let token =
@@ -118,7 +120,7 @@ async function register(req, res) {
         }
       },
       process.env.TOKEN_SECRET,
-      { expiresIn: 60 * 60 * 24 }
+      { expiresIn: expireTime }
     );
 
     await delete user[0].dataValues.password;
@@ -167,7 +169,6 @@ async function login(req, res, next) {
     }
 
     if (bcrypt.compareSync(password, user.password)) {
-      // expiresIn: 60 * 60 * 24 = 1 day
       let token = jwt.sign(
         {
           data: {
@@ -178,7 +179,7 @@ async function login(req, res, next) {
           }
         },
         process.env.TOKEN_SECRET,
-        { expiresIn: 60 * 60 * 24 }
+        { expiresIn: expireTime }
       );
 
       if (!user.email_confirmed) {
@@ -242,7 +243,7 @@ function emailConfirmation(req, res, next) {
               }
             },
             process.env.TOKEN_SECRET,
-            { expiresIn: 60 * 60 * 24 }
+            { expiresIn: expireTime }
           );
           delete user.dataValues.password;
           next();
