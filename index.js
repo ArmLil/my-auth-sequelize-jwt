@@ -3,15 +3,15 @@
 var express = require("express");
 var app = express();
 
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
 
 require("dotenv").config();
-var exphbs  = require('express-handlebars');
+var exphbs = require("express-handlebars");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 //Import routes
-let api = require("./routes/api")();
+let api = require("./routes/api")(io);
 var db = require("./models");
 
 // Log requests to the console.
@@ -27,18 +27,16 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
-app.get('/', function (req, res) {
-  console.log('app.get(/)');
-  res.sendFile(__dirname + '/index.html');
+app.get("/", function(req, res) {
+  console.log("app.get(/)");
+  res.sendFile(__dirname + "/index.html");
 });
 
 app.use("/api/v1/", api);
 
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
-app.set('views', 'public/views');
-
+app.engine("handlebars", exphbs());
+app.set("view engine", "handlebars");
+app.set("views", "public/views");
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,16 +45,15 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-
-// io.on('connection', function (socket) {
-//   console.log('user connected...');
-//   socket.emit('news', { hello: 'world' });
-//   socket.on('my other event', function (data) {
-//     console.log('this is on server side', data);
+// io.on("connection", function(socket) {
+//   console.log("user connected...", socket.handshake);
+//   socket.emit("news", { hello: "world" });
+//   socket.on("my other event", function(data) {
+//     console.log("this is on server side", data);
 //   });
-//   socket.on("disconnect", ()=>{
-//     console.log("Disconnected")
-//   })
+//   socket.on("disconnect", () => {
+//     console.log("Disconnected");
+//   });
 // });
 
 const port = process.env.PORT || 3000;
