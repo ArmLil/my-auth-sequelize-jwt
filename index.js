@@ -45,16 +45,33 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// io.on("connection", function(socket) {
-//   console.log("user connected...", socket.handshake);
-//   socket.emit("news", { hello: "world" });
-//   socket.on("my other event", function(data) {
-//     console.log("this is on server side", data);
-//   });
-//   socket.on("disconnect", () => {
-//     console.log("Disconnected");
-//   });
+// io.on("input from client", function(data) {
+//   console.log("this is on server side", data);
+//   socket.emit("input from server", data);
+//   // setTimeout(() => socket.emit("res input", data), 3000);
 // });
+
+io.on("connection", function(socket) {
+  // console.log("user connected...", socket.handshake.headers);
+  console.log("user connected...", socket.handshake.headers["user-agent"]);
+  // console.log("user connected...");
+
+  socket.emit("demo", { value: "demo value" });
+
+  socket.on("join", function(room) {
+    socket.join(room); // Now this socket will receive all the messages broadcast to 'myRoom'
+  });
+
+  socket.on("input from client", function(data) {
+    console.log("this is on server, input from client", data);
+    socket.emit("input from server", data);
+    // setTimeout(() => socket.emit("res input", data), 3000);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Disconnected");
+  });
+});
 
 const port = process.env.PORT || 3000;
 

@@ -5,9 +5,10 @@ module.exports = function(io) {
 
   async function getChatMessages(req, res) {
     console.log("function getChatMessages");
-    console.log("io = ", io);
+    // console.log("io = ", io);
     try {
       let chatMessages = await db.ChatMessage.findAndCountAll();
+      io.emit("get chatMessages", { chatMessages: chatMessages });
       res.json({
         chatMessages
       });
